@@ -1,0 +1,802 @@
+{
+  "type": "FeatureCollection",
+  "name": "Azerbaijan Energy Sites",
+  "description": "Comprehensive GeoJSON dataset of energy infrastructure in Azerbaijan including offshore/onshore oil & gas fields, refineries, pipeline terminals, thermal power plants, hydroelectric power stations, and renewable energy sites. Coordinates in WGS84.",
+  "metadata": {
+    "created": "2026-03-27",
+    "source": "Compiled from SOCAR, BP, IEA, Wikipedia, Global Energy Monitor, Ministry of Energy of Azerbaijan, and offshore industry reports.",
+    "categories": ["oil_field", "gas_field", "refinery", "pipeline_terminal", "thermal_power_plant", "hydro_power_plant", "wind_farm", "solar_plant", "compressor_station"],
+    "crs": "WGS84 (EPSG:4326)"
+  },
+  "features": [
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-001",
+      "geometry": { "type": "Point", "coordinates": [50.45, 40.45] },
+      "properties": {
+        "name": "Azeri-Chirag-Gunashli (ACG)",
+        "type": "oil_field",
+        "sub_type": "offshore",
+        "status": "operational",
+        "operator": "BP (AIOC)",
+        "partners": ["BP 30.37%", "SOCAR 25%", "MOL 9.57%", "Equinor 7.27%", "ExxonMobil 6.79%", "TPAO 5.73%", "INPEX 9.31%", "ITOCHU 3.65%", "ONGC 2.31%"],
+        "resource": "oil_and_gas",
+        "location": "Caspian Sea, ~100 km east of Baku",
+        "water_depth_m": 180,
+        "reserves_oil_mt": 1200,
+        "capacity_bbl_d": 550000,
+        "first_production": 1997,
+        "contract": "Production Sharing Agreement (PSA), extended to 2050",
+        "platforms": ["Central Azeri", "West Azeri", "East Azeri", "Chirag", "West Chirag", "ACE (Azeri Central East)"],
+        "notes": "Largest oil development project in Azerbaijan; accounts for ~60-65% of national oil output."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-002",
+      "geometry": { "type": "Point", "coordinates": [50.00, 39.85] },
+      "properties": {
+        "name": "Shah Deniz Gas Field",
+        "type": "gas_field",
+        "sub_type": "offshore",
+        "status": "operational",
+        "operator": "BP",
+        "partners": ["BP 29.99%", "LUKoil 19.99%", "TPAO 19.00%", "SOCAR 14.35%", "NIOC 10.00%", "SGC Upstream 6.67%"],
+        "resource": "gas_and_condensate",
+        "location": "South Caspian Sea, ~70 km southeast of Baku",
+        "water_depth_m": 600,
+        "area_km2": 860,
+        "reserves_gas_bcm": 1000,
+        "reserves_condensate_mt": 243,
+        "first_production": 2006,
+        "stages": ["Shah Deniz 1 (SD1) - operational since 2006", "Shah Deniz 2 (SD2) - operational since 2018"],
+        "export_route": "South Caucasus Pipeline (SCP) → TANAP → TAP to Europe",
+        "notes": "One of the world's largest gas fields; backbone of the Southern Gas Corridor supplying gas to Europe."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-003",
+      "geometry": { "type": "Point", "coordinates": [50.798, 40.009] },
+      "properties": {
+        "name": "Absheron Gas Field",
+        "type": "gas_field",
+        "sub_type": "offshore",
+        "status": "operational",
+        "operator": "TotalEnergies",
+        "partners": ["SOCAR 50%", "TotalEnergies 35%", "ADNOC 15%"],
+        "resource": "gas_and_condensate",
+        "location": "Caspian Sea, ~100 km southeast of Baku; 25 km NE of Shah Deniz",
+        "water_depth_m": 500,
+        "area_km2": 270,
+        "reserves_gas_bcm": 350,
+        "reserves_condensate_mt": 45,
+        "first_production": 2023,
+        "discovery_year": 2011,
+        "notes": "Early Production System (EPS) first gas achieved July 2023. Major gas reserve boosting Azerbaijan's export capacity."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-004",
+      "geometry": { "type": "Point", "coordinates": [49.70, 39.75] },
+      "properties": {
+        "name": "Umid Gas-Condensate Field",
+        "type": "gas_field",
+        "sub_type": "offshore",
+        "status": "operational",
+        "operator": "SOCAR",
+        "partners": ["SOCAR 100%"],
+        "resource": "gas_and_condensate",
+        "location": "Caspian Sea, ~75 km south of Baku",
+        "reserves_gas_bcm": 200,
+        "reserves_condensate_mt": 40,
+        "first_production": 2012,
+        "discovery_year": 2010,
+        "notes": "SOCAR-operated field; initial platform with 3 wells. Second platform planned to increase gas output to 3 bcm/yr."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-005",
+      "geometry": { "type": "Point", "coordinates": [50.60, 40.50] },
+      "properties": {
+        "name": "Karabakh Oil & Gas Field",
+        "type": "oil_field",
+        "sub_type": "offshore",
+        "status": "development",
+        "operator": "BP",
+        "partners": ["BP 35%", "SOCAR 65%"],
+        "resource": "oil_and_gas",
+        "location": "Caspian Sea, ~120-130 km east of Baku; 15 km NE of ACG",
+        "reserves_oil_mt": 10,
+        "reserves_gas_bcm": 5.5,
+        "discovery_year": 1990,
+        "notes": "BP acquired 35% operating stake from SOCAR in June 2025. Field previously explored by CIPCO (LUKAgip/Pennzoil consortium) in the 1990s."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-006",
+      "geometry": { "type": "Point", "coordinates": [50.20, 39.60] },
+      "properties": {
+        "name": "Shafag-Asiman Gas Field",
+        "type": "gas_field",
+        "sub_type": "offshore",
+        "status": "evaluation",
+        "operator": "BP",
+        "partners": ["BP 50%", "SOCAR 50%"],
+        "resource": "gas",
+        "location": "South Caspian Sea, deeper water south of Shah Deniz",
+        "notes": "Ultra-deepwater gas field under evaluation phase as of 2025. Partnership between BP and SOCAR."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-007",
+      "geometry": { "type": "Point", "coordinates": [49.67, 39.55] },
+      "properties": {
+        "name": "Babek Gas Field",
+        "type": "gas_field",
+        "sub_type": "offshore",
+        "status": "exploration",
+        "operator": "SOCAR",
+        "partners": ["SOCAR 100%"],
+        "resource": "gas_and_condensate",
+        "location": "Caspian Sea, adjacent to Umid field south of Baku",
+        "reserves_gas_bcm": 400,
+        "notes": "Part of the Umid-Babek gas complex; combined estimated reserves of 600 bcm. Under further appraisal."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-008",
+      "geometry": { "type": "Point", "coordinates": [50.75, 40.23] },
+      "properties": {
+        "name": "Neft Dashlari (Oil Rocks)",
+        "type": "oil_field",
+        "sub_type": "offshore",
+        "status": "operational",
+        "operator": "SOCAR",
+        "partners": ["SOCAR 100%"],
+        "resource": "oil",
+        "location": "Caspian Sea, ~110 km east of Baku",
+        "first_production": 1949,
+        "notes": "World's first offshore oil platform (1949). Still operational with an extensive network of trestle roads and platforms. Historic Soviet-era mega-project."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-009",
+      "geometry": { "type": "Point", "coordinates": [50.03, 40.47] },
+      "properties": {
+        "name": "Pirallahi Oil Field",
+        "type": "oil_field",
+        "sub_type": "onshore_nearshore",
+        "status": "operational",
+        "operator": "SOCAR",
+        "resource": "oil",
+        "location": "Pirallahi Island, Absheron Peninsula",
+        "first_production": 1901,
+        "notes": "One of Azerbaijan's oldest oil fields, discovered in 1901. Located on Pirallahi Island in the Caspian Sea."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-010",
+      "geometry": { "type": "Point", "coordinates": [49.99, 40.42] },
+      "properties": {
+        "name": "Balakhani-Sabunchu-Ramana Oil Fields",
+        "type": "oil_field",
+        "sub_type": "onshore",
+        "status": "operational",
+        "operator": "SOCAR",
+        "resource": "oil",
+        "location": "Absheron Peninsula, north of Baku",
+        "first_production": 1847,
+        "notes": "Site of the world's first industrially drilled oil well (1847). Legacy onshore field complex on the Absheron Peninsula."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-011",
+      "geometry": { "type": "Point", "coordinates": [49.85, 40.35] },
+      "properties": {
+        "name": "Bibi-Heybat Oil Field",
+        "type": "oil_field",
+        "sub_type": "onshore_nearshore",
+        "status": "operational",
+        "operator": "SOCAR",
+        "resource": "oil",
+        "location": "Bibi-Heybat Bay, southern Baku coast",
+        "first_production": 1871,
+        "notes": "Historic nearshore field; partially reclaimed from the Caspian Sea. Contains the ATA construction yard for offshore platforms."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-012",
+      "geometry": { "type": "Point", "coordinates": [50.90, 40.50] },
+      "properties": {
+        "name": "Ashrafi–Dan Ulduzu–Aypara (ADUA)",
+        "type": "oil_field",
+        "sub_type": "offshore",
+        "status": "development",
+        "operator": "BP",
+        "partners": ["BP 35%", "SOCAR 65%"],
+        "resource": "oil",
+        "location": "Caspian Sea, northeast of ACG block",
+        "notes": "BP acquired 35% operator stake alongside the Karabakh field in June 2025. Early-stage development."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-013",
+      "geometry": { "type": "Point", "coordinates": [49.96, 40.19] },
+      "properties": {
+        "name": "Sangachal Terminal",
+        "type": "pipeline_terminal",
+        "sub_type": "oil_and_gas_processing",
+        "status": "operational",
+        "operator": "BP / AIOC / SGC",
+        "location": "Sangachal, ~30 km south of Baku center",
+        "pipelines_connected": [
+          "Baku-Tbilisi-Ceyhan (BTC) oil pipeline",
+          "South Caucasus Pipeline (SCP/SCPX) gas pipeline",
+          "Shah Deniz condensate pipeline"
+        ],
+        "notes": "Central hub for Azerbaijani oil and gas exports. Receives production from ACG (oil) and Shah Deniz (gas/condensate). Starting point of BTC and SCP pipelines."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-014",
+      "geometry": { "type": "Point", "coordinates": [49.98, 40.36] },
+      "properties": {
+        "name": "Heydar Aliyev Baku Oil Refinery",
+        "type": "refinery",
+        "sub_type": "crude_oil_refinery",
+        "status": "operational",
+        "operator": "SOCAR",
+        "location": "Hovsan district, southeastern Baku",
+        "capacity_mt_yr": 6,
+        "products": ["Gasoline (Euro 5)", "Diesel (Euro 5)", "Aviation kerosene", "Bitumen (under construction)", "Mazut"],
+        "modernization_phase": "Phase 1 completed 2024 (Euro-5 fuels); Phase 2 ongoing (bitumen plant); Phase 3 by 2026",
+        "notes": "Major SOCAR refinery undergoing large-scale modernization since 2022. Gasoline capacity to rise to 2.2 Mt/yr upon completion."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-015",
+      "geometry": { "type": "Point", "coordinates": [49.66, 40.59] },
+      "properties": {
+        "name": "Sumgait Thermal Power Plant",
+        "type": "thermal_power_plant",
+        "sub_type": "gas_fired",
+        "status": "operational",
+        "operator": "AzerEnergy JSC",
+        "location": "Sumgait (Sumqayıt), north of Baku",
+        "capacity_mw": 525,
+        "fuel": "natural gas",
+        "notes": "One of Azerbaijan's significant gas-fired power stations supplying the industrial city of Sumgait."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-016",
+      "geometry": { "type": "Point", "coordinates": [49.98, 40.62] },
+      "properties": {
+        "name": "Shimal Thermal Power Plant",
+        "type": "thermal_power_plant",
+        "sub_type": "gas_fired",
+        "status": "operational",
+        "operator": "AzerEnergy JSC",
+        "location": "North of Baku / Absheron district",
+        "capacity_mw": 400,
+        "fuel": "natural gas",
+        "notes": "Shimal-1 (400 MW steam-gas, commissioned 2002) and Shimal-2 (commissioned September 2019) are key plants serving greater Baku."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-017",
+      "geometry": { "type": "Point", "coordinates": [49.95, 40.38] },
+      "properties": {
+        "name": "Baku Thermal Power Plant",
+        "type": "thermal_power_plant",
+        "sub_type": "gas_fired",
+        "status": "operational",
+        "operator": "AzerEnergy JSC",
+        "location": "Baku city",
+        "capacity_mw": 107,
+        "fuel": "natural gas",
+        "notes": "Urban thermal plant including two gas-turbine units (53.5 MW each) funded by Bayerische Landesbank."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-018",
+      "geometry": { "type": "Point", "coordinates": [47.03, 40.79] },
+      "properties": {
+        "name": "Azerbaijan Thermal Power Plant (Mingachevir)",
+        "type": "thermal_power_plant",
+        "sub_type": "gas_fired",
+        "status": "operational",
+        "operator": "AzerEnergy JSC",
+        "location": "Mingachevir, Kura River valley",
+        "capacity_mw": 2400,
+        "fuel": "natural gas",
+        "notes": "Largest power plant in Azerbaijan and the South Caucasus. Co-located with the Mingachevir HPP; known as Azerbaijan TPP."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-019",
+      "geometry": { "type": "Point", "coordinates": [48.92, 39.94] },
+      "properties": {
+        "name": "Janub Thermal Power Plant (Shirvan TPP)",
+        "type": "thermal_power_plant",
+        "sub_type": "gas_fired",
+        "status": "operational",
+        "operator": "AzerEnergy JSC",
+        "location": "Near Shirvan city (Shirvan-Salyan district)",
+        "capacity_mw": 780,
+        "fuel": "natural gas",
+        "notes": "Covers over 30% of Azerbaijan's electricity needs. Replaced the old Ali-Bayramli gas power station. Plans to add Garadagh Solar Power Plant adjacent."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-020",
+      "geometry": { "type": "Point", "coordinates": [45.42, 39.21] },
+      "properties": {
+        "name": "Nakhchivan Thermal Power Plant",
+        "type": "thermal_power_plant",
+        "sub_type": "gas_fired",
+        "status": "operational",
+        "operator": "AzerEnergy JSC",
+        "location": "Nakhchivan city, Nakhchivan Autonomous Republic",
+        "fuel": "natural gas",
+        "notes": "Provides electricity to the Nakhchivan exclave, which has a separate power system from mainland Azerbaijan."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-021",
+      "geometry": { "type": "Point", "coordinates": [41.63, 40.95] },
+      "properties": {
+        "name": "Sheki Thermal Power Plant",
+        "type": "thermal_power_plant",
+        "sub_type": "gas_fired",
+        "status": "operational",
+        "operator": "AzerEnergy JSC",
+        "location": "Sheki district, northwestern Azerbaijan",
+        "fuel": "natural gas",
+        "notes": "Regional gas-fired power plant serving northwestern Azerbaijan."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-022",
+      "geometry": { "type": "Point", "coordinates": [47.028, 40.793] },
+      "properties": {
+        "name": "Mingachevir Hydroelectric Power Plant",
+        "type": "hydro_power_plant",
+        "sub_type": "reservoir_dam",
+        "status": "operational",
+        "operator": "AzerEnergy JSC",
+        "location": "Mingachevir, Kura River",
+        "capacity_mw": 402,
+        "annual_generation_gwh": 1350,
+        "dam_length_m": 1550,
+        "dam_height_m": 80,
+        "reservoir_capacity_km3": 15.73,
+        "reservoir_area_km2": 605,
+        "turbine_units": 6,
+        "turbine_type": "Francis",
+        "first_unit": 1953,
+        "notes": "Largest hydroelectric power station in the South Caucasus. Built 1945-1954. Overhauled in 2000 with new 70 MW turbine sets."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-023",
+      "geometry": { "type": "Point", "coordinates": [46.01, 40.82] },
+      "properties": {
+        "name": "Shamkir Hydroelectric Power Plant",
+        "type": "hydro_power_plant",
+        "sub_type": "reservoir_dam",
+        "status": "operational",
+        "operator": "AzerEnergy JSC",
+        "location": "Shamkir district, Kura River",
+        "capacity_mw": 380,
+        "commissioned": 1982,
+        "notes": "Second largest HPP in Azerbaijan, situated on the Kura River. Provides approximately 12% of national electricity together with Mingachevir HPP."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-024",
+      "geometry": { "type": "Point", "coordinates": [46.72, 40.90] },
+      "properties": {
+        "name": "Yenikend Hydroelectric Power Plant",
+        "type": "hydro_power_plant",
+        "sub_type": "reservoir_dam",
+        "status": "operational",
+        "operator": "AzerEnergy JSC",
+        "location": "Yevlakh-Goygol district, Kura River",
+        "capacity_mw": 150,
+        "commissioned": 2000,
+        "funding": "EBRD loan ($53 million)",
+        "notes": "Built with EBRD financing; part of the Kura River hydro cascade."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-025",
+      "geometry": { "type": "Point", "coordinates": [46.95, 40.35] },
+      "properties": {
+        "name": "Tartar Hydroelectric Power Plant",
+        "type": "hydro_power_plant",
+        "sub_type": "run_of_river",
+        "status": "operational",
+        "operator": "AzerEnergy JSC",
+        "location": "Tartar district, Kura River tributary",
+        "capacity_mw": 50,
+        "commissioned": 1976,
+        "notes": "Mid-sized hydroelectric plant on the Kura system."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-026",
+      "geometry": { "type": "Point", "coordinates": [45.26, 39.14] },
+      "properties": {
+        "name": "Araz Hydroelectric Power Plant",
+        "type": "hydro_power_plant",
+        "sub_type": "dam",
+        "status": "operational",
+        "operator": "AzerEnergy JSC",
+        "location": "Aras River, Azerbaijan-Iran border (Julfa district)",
+        "capacity_mw": 22,
+        "commissioned": 1970,
+        "notes": "Joint Azerbaijani-Iranian hydroelectric station on the Aras River border."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-027",
+      "geometry": { "type": "Point", "coordinates": [46.84, 40.87] },
+      "properties": {
+        "name": "Varvara Hydroelectric Power Plant",
+        "type": "hydro_power_plant",
+        "sub_type": "run_of_river",
+        "status": "operational",
+        "operator": "AzerEnergy JSC",
+        "location": "Kura River, central Azerbaijan",
+        "capacity_mw": 30,
+        "notes": "Part of the Kura River hydro cascade system."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-028",
+      "geometry": { "type": "Point", "coordinates": [49.07, 40.91] },
+      "properties": {
+        "name": "Yeni Yashma Wind Power Park",
+        "type": "wind_farm",
+        "sub_type": "onshore_wind",
+        "status": "operational",
+        "operator": "AzerEnergy JSC",
+        "location": "Khizi District, northeastern Azerbaijan (Caspian coast)",
+        "capacity_mw": 50,
+        "notes": "Largest wind power project in Azerbaijan as of 2023. Located in Khizi District known for strong Caspian winds."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-029",
+      "geometry": { "type": "Point", "coordinates": [45.45, 39.15] },
+      "properties": {
+        "name": "Nakhchivan Solar Power Plant",
+        "type": "solar_plant",
+        "sub_type": "utility_scale_pv",
+        "status": "operational",
+        "operator": "AzerEnergy JSC",
+        "location": "Babek District, Nakhchivan Autonomous Republic",
+        "capacity_mw": 22,
+        "notes": "Largest operating solar farm in Azerbaijan as of 2023; located in the sunny Nakhchivan region."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-030",
+      "geometry": { "type": "Point", "coordinates": [48.94, 39.90] },
+      "properties": {
+        "name": "Garadagh Solar Power Plant",
+        "type": "solar_plant",
+        "sub_type": "utility_scale_pv",
+        "status": "planned",
+        "operator": "AzerEnergy JSC / Masdar (Abu Dhabi)",
+        "location": "Garadagh district, southern Baku area / near Shirvan",
+        "notes": "Planned solar facility adjacent to the Janub TPP. Part of Azerbaijan's renewable energy expansion program."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-031",
+      "geometry": { "type": "Point", "coordinates": [49.67, 40.61] },
+      "properties": {
+        "name": "Sumgait Petrochemical Complex",
+        "type": "petrochemical",
+        "sub_type": "petrochemical_plant",
+        "status": "operational",
+        "operator": "SOCAR / AZPETROL",
+        "location": "Sumgait industrial zone, north of Baku",
+        "notes": "Major industrial complex historically important for petrochemicals in the Soviet era; now partially upgraded under SOCAR."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-032",
+      "geometry": { "type": "Point", "coordinates": [49.96, 40.21] },
+      "properties": {
+        "name": "Baku-Tbilisi-Ceyhan (BTC) Pipeline – Baku Origin",
+        "type": "pipeline_terminal",
+        "sub_type": "oil_pipeline_origin",
+        "status": "operational",
+        "operator": "BP / BTC Co.",
+        "location": "Sangachal Terminal, south of Baku",
+        "pipeline_length_km": 1768,
+        "pipeline_destination": "Ceyhan, Turkey (Mediterranean)",
+        "commissioned": 2006,
+        "throughput_bbl_d": 1200000,
+        "notes": "Main crude oil export pipeline from Azerbaijan. Carries ACG crude from Sangachal to Ceyhan terminal on the Turkish Mediterranean coast."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-033",
+      "geometry": { "type": "Point", "coordinates": [49.96, 40.20] },
+      "properties": {
+        "name": "South Caucasus Pipeline (SCP/SCPX) – Baku Origin",
+        "type": "pipeline_terminal",
+        "sub_type": "gas_pipeline_origin",
+        "status": "operational",
+        "operator": "BP / SGC",
+        "location": "Sangachal Terminal, south of Baku",
+        "pipeline_length_km": 692,
+        "pipeline_destination": "Turkish-Georgian border; connects to TANAP and TAP to Europe",
+        "commissioned": 2006,
+        "notes": "Key export gas pipeline from Shah Deniz. Expanded (SCPX) for Shah Deniz Stage 2 to supply Southern Gas Corridor."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-034",
+      "geometry": { "type": "Point", "coordinates": [50.27, 40.42] },
+      "properties": {
+        "name": "Baku-Novorossiysk Pipeline – Baku Origin",
+        "type": "pipeline_terminal",
+        "sub_type": "oil_pipeline_origin",
+        "status": "operational",
+        "operator": "SOCAR / Transneft",
+        "location": "Absheron Peninsula, Baku",
+        "pipeline_length_km": 1347,
+        "pipeline_destination": "Novorossiysk, Russia (Black Sea)",
+        "notes": "Northern oil export route to the Russian Black Sea port of Novorossiysk. Alternative to BTC."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-035",
+      "geometry": { "type": "Point", "coordinates": [49.97, 40.30] },
+      "properties": {
+        "name": "Baku-Supsa Pipeline – Baku Origin",
+        "type": "pipeline_terminal",
+        "sub_type": "oil_pipeline_origin",
+        "status": "operational",
+        "operator": "SOCAR / BP",
+        "location": "Absheron Peninsula, south Baku area",
+        "pipeline_length_km": 833,
+        "pipeline_destination": "Supsa, Georgia (Black Sea)",
+        "notes": "Western early export route for Azerbaijani oil to the Georgian Black Sea port of Supsa."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-036",
+      "geometry": { "type": "Point", "coordinates": [49.38, 40.55] },
+      "properties": {
+        "name": "Khachmaz Gas Power Plant",
+        "type": "thermal_power_plant",
+        "sub_type": "gas_fired",
+        "status": "operational",
+        "operator": "AzerEnergy JSC",
+        "location": "Khachmaz district, northern Azerbaijan",
+        "fuel": "natural gas",
+        "notes": "Regional gas-fired plant serving northern Azerbaijan."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-037",
+      "geometry": { "type": "Point", "coordinates": [48.96, 40.69] },
+      "properties": {
+        "name": "Astara Gas Power Plant",
+        "type": "thermal_power_plant",
+        "sub_type": "gas_fired",
+        "status": "operational",
+        "operator": "AzerEnergy JSC",
+        "location": "Astara district, southern Azerbaijan (Iran border)",
+        "fuel": "natural gas",
+        "notes": "Southern regional power plant near the Iran border."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-038",
+      "geometry": { "type": "Point", "coordinates": [49.96, 40.38] },
+      "properties": {
+        "name": "Sangachal Gas Compressor Station",
+        "type": "compressor_station",
+        "sub_type": "gas_compression",
+        "status": "operational",
+        "operator": "BP / SGC",
+        "location": "Sangachal Terminal, south of Baku",
+        "notes": "Gas compression and processing facility integrated within the Sangachal Terminal for Shah Deniz gas export."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-039",
+      "geometry": { "type": "Point", "coordinates": [49.23, 40.86] },
+      "properties": {
+        "name": "Quba Gas Power Plant",
+        "type": "thermal_power_plant",
+        "sub_type": "gas_fired",
+        "status": "operational",
+        "operator": "AzerEnergy JSC",
+        "location": "Quba district, northeastern Azerbaijan",
+        "fuel": "natural gas",
+        "notes": "Regional gas-fired thermal plant serving Quba district."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-040",
+      "geometry": { "type": "Point", "coordinates": [46.36, 40.68] },
+      "properties": {
+        "name": "Ganja Thermal Power Plant",
+        "type": "thermal_power_plant",
+        "sub_type": "gas_fired",
+        "status": "operational",
+        "operator": "AzerEnergy JSC",
+        "location": "Ganja, second largest city of Azerbaijan",
+        "fuel": "natural gas",
+        "notes": "Thermal power plant serving Azerbaijan's second largest city and the wider Ganja-Dashkasan region."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-041",
+      "geometry": { "type": "Point", "coordinates": [49.73, 40.44] },
+      "properties": {
+        "name": "Hajiqabul Wind Farm",
+        "type": "wind_farm",
+        "sub_type": "onshore_wind",
+        "status": "planned",
+        "operator": "AzerEnergy / ACWA Power",
+        "location": "Hajiqabul district, western Absheron",
+        "capacity_mw": 240,
+        "notes": "Large-scale onshore wind project planned as part of Azerbaijan's renewable energy expansion following COP29 commitments."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-042",
+      "geometry": { "type": "Point", "coordinates": [49.80, 40.25] },
+      "properties": {
+        "name": "Alat Wind & Solar Complex",
+        "type": "solar_plant",
+        "sub_type": "utility_scale_hybrid",
+        "status": "planned",
+        "operator": "AzerEnergy / Masdar",
+        "location": "Alat district, south of Baku (future Free Economic Zone)",
+        "capacity_mw": 200,
+        "notes": "Hybrid wind and solar project planned for the Alat Free Economic Zone area. Part of Azerbaijan's post-COP29 renewable targets."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-043",
+      "geometry": { "type": "Point", "coordinates": [49.04, 39.43] },
+      "properties": {
+        "name": "Shirvan Onshore Oil Fields",
+        "type": "oil_field",
+        "sub_type": "onshore",
+        "status": "operational",
+        "operator": "SOCAR",
+        "resource": "oil",
+        "location": "Shirvan-Salyan region, central-eastern Azerbaijan",
+        "notes": "Cluster of onshore legacy oil fields in the Shirvan lowlands operated by SOCAR."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-044",
+      "geometry": { "type": "Point", "coordinates": [45.95, 39.38] },
+      "properties": {
+        "name": "Nakhchivan Small Hydropower Plants",
+        "type": "hydro_power_plant",
+        "sub_type": "small_hydro",
+        "status": "operational",
+        "operator": "AzerEnergy JSC",
+        "location": "Nakhchivan Autonomous Republic, Aras River tributaries",
+        "capacity_mw": 15,
+        "notes": "Collection of small-run-of-river hydroelectric plants in the mountainous Nakhchivan exclave."
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "AZ-E-045",
+      "geometry": { "type": "Point", "coordinates": [48.27, 40.59] },
+      "properties": {
+        "name": "Agsu–Goychay Small Hydropower Plants",
+        "type": "hydro_power_plant",
+        "sub_type": "small_hydro",
+        "status": "operational",
+        "operator": "AzerEnergy JSC / Private",
+        "location": "Agsu and Goychay districts, central Azerbaijan",
+        "capacity_mw": 5,
+        "notes": "Small hydropower facilities on mountain tributaries of the Kura River. Includes Goychay SHPP (3.1 MW) and Ismayilli SHPPs."
+      }
+    }
+
+  ]
+}
