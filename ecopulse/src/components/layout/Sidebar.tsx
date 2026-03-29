@@ -9,20 +9,31 @@ import {
   Map,
   FileText,
   DownloadCloud,
+  Target,
+  X,
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import CarbonReduction from '../dashboard/CarbonReduction';
 
-const navItems = [
-  { icon: LayoutDashboard, label: 'Dashboard', to: '/' },
-  { icon: Calculator, label: 'Calculator', to: '/calculator' },
-  { icon: BarChart2, label: 'Analytics', to: '/analytics' },
-  { icon: Brain, label: 'Prediction', to: '/prediction' },
-  { icon: Cpu, label: 'Simulation', to: '/simulation' },
-  { icon: Map, label: 'Map', to: '/map' },
-  { icon: FileText, label: 'Reports', to: '/reports' },
+const navDefs = [
+  { icon: LayoutDashboard, labelKey: 'nav.dashboard', to: '/dashboard' },
+  { icon: Calculator, labelKey: 'nav.calculator', to: '/calculator' },
+  { icon: BarChart2, labelKey: 'nav.analytics', to: '/analytics' },
+  { icon: Brain, labelKey: 'nav.prediction', to: '/prediction' },
+  { icon: Cpu, labelKey: 'nav.simulation', to: '/simulation' },
+  { icon: Map, labelKey: 'nav.map', to: '/map' },
+  { icon: FileText, labelKey: 'nav.reports', to: '/reports' },
+  { icon: Target, labelKey: 'nav.vision', to: '/vision' },
 ];
 
-export default function Sidebar() {
+interface Props {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export default function Sidebar({ isOpen, onClose }: Props) {
+  const { t } = useTranslation();
+
   const handleDownload = () => {
     const report = {
       generatedAt: new Date().toISOString(),
@@ -33,12 +44,12 @@ export default function Sidebar() {
         energy: '12,500 kg (51.3%)',
         industry: '3,650 kg (15.0%)',
       },
-      carbonReduction: '-12% this month',
-      prediction: 'Projected 15% increase by 2030 (28,000 kg)',
+      carbonReduction: t('sidebar.thisMonth'),
+      prediction: t('dash.ai.increase'),
       recommendations: [
-        'Use Public Transport — reduce car usage in cities',
-        'Save Energy — switch to LED and efficient appliances',
-        'Switch to Renewables — invest in clean energy sources',
+        t('rec.transport.title') + ' — ' + t('rec.transport.subtitle'),
+        t('rec.energy.title') + ' — ' + t('rec.energy.subtitle'),
+        t('rec.renewables.title') + ' — ' + t('rec.renewables.subtitle'),
       ],
     };
     const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
@@ -52,100 +63,58 @@ export default function Sidebar() {
 
   return (
     <aside
-      style={{
-        position: 'fixed',
-        left: 0,
-        top: 0,
-        width: 240,
-        height: '100vh',
-        background: 'var(--color-sidebar)',
-        borderRight: '1px solid var(--color-border)',
-        display: 'flex',
-        flexDirection: 'column',
-        zIndex: 50,
-      }}
+      className={`
+        fixed inset-y-0 left-0 w-60 bg-sidebar border-r border-border
+        flex flex-col z-50 transition-transform duration-300 ease-in-out
+        ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+        lg:translate-x-0
+      `}
     >
-      {/* Logo */}
-      <div style={{ padding: 20 }}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <Leaf size={24} color="#22C55E" />
-          <span
-            style={{
-              fontSize: 20,
-              fontWeight: 700,
-              color: 'white',
-              marginLeft: 8,
-            }}
-          >
-            EcoPulse
-          </span>
+      <div className="p-5 flex items-center justify-between">
+        <div className="flex items-center">
+          <Leaf size={24} className="text-accent" />
+          <span className="text-xl font-bold text-text-primary ml-2">{t('sidebar.brand')}</span>
         </div>
+        <button type="button" onClick={onClose} className="lg:hidden p-1 text-text-muted hover:text-text-primary">
+          <X size={20} />
+        </button>
       </div>
 
-      {/* Navigation */}
-      <nav style={{ marginTop: 12, flex: 1, padding: '0 12px' }}>
-        <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 2 }}>
-          {navItems.map((item) => (
+      <nav className="mt-3 flex-1 px-3" data-tour="sidebar">
+        <ul className="flex flex-col gap-0.5">
+          {navDefs.map((item) => (
             <li key={item.to}>
               <NavLink
                 to={item.to}
                 end={item.to === '/'}
-                style={({ isActive }) => ({
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 12,
-                  padding: '10px 16px',
-                  borderRadius: 8,
-                  color: isActive ? 'var(--color-accent)' : 'var(--color-text-muted)',
-                  fontSize: 14,
-                  fontWeight: isActive ? 600 : 500,
-                  textDecoration: 'none',
-                  background: isActive ? 'var(--color-accent-glow)' : 'transparent',
-                  transition: 'all 0.15s ease',
-                })}
-                className="sidebar-link"
+                onClick={onClose}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm transition-all duration-150
+                   ${isActive
+                     ? 'text-accent font-semibold bg-accent-glow'
+                     : 'text-text-muted font-medium hover:text-text-primary hover:bg-surface-2'
+                   }`
+                }
               >
                 <item.icon size={18} />
-                {item.label}
+                {t(item.labelKey)}
               </NavLink>
             </li>
           ))}
         </ul>
       </nav>
 
-      {/* Bottom section */}
-      <div style={{ padding: 16 }}>
+      <div className="p-4">
         <CarbonReduction />
         <button
+          type="button"
           onClick={handleDownload}
-          style={{
-            width: '100%',
-            marginTop: 12,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 8,
-            background: 'transparent',
-            border: '1px solid var(--color-border)',
-            color: 'var(--color-text-secondary)',
-            borderRadius: 8,
-            padding: '10px 16px',
-            fontSize: 13,
-            fontWeight: 500,
-            cursor: 'pointer',
-            transition: 'all 0.15s ease',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.borderColor = 'var(--color-accent)';
-            e.currentTarget.style.color = 'var(--color-accent)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.borderColor = 'var(--color-border)';
-            e.currentTarget.style.color = 'var(--color-text-secondary)';
-          }}
+          className="w-full mt-3 flex items-center justify-center gap-2 bg-transparent border border-border
+                     text-text-secondary rounded-lg px-4 py-2.5 text-[13px] font-medium cursor-pointer
+                     transition-colors duration-150 hover:border-accent hover:text-accent"
         >
           <DownloadCloud size={16} />
-          Download Report
+          {t('sidebar.downloadReport')}
         </button>
       </div>
     </aside>

@@ -14,47 +14,23 @@ export default function SliderInput({ label, value, min, max, step, unit, baseli
   const baselinePct = baseline !== undefined ? ((baseline - min) / (max - min)) * 100 : null;
 
   return (
-    <div style={{ marginBottom: 14 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-        <span style={{ fontSize: 13, color: 'var(--color-text-muted)', fontWeight: 500 }}>{label}</span>
-        <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--color-text-primary)' }}>
-          {value}{unit}
-        </span>
+    <div className="mb-3.5">
+      <div className="flex justify-between mb-1.5">
+        <span className="text-[13px] text-text-muted font-medium">{label}</span>
+        <span className="text-[13px] font-bold text-text-primary">{value}{unit}</span>
       </div>
-      <div style={{ position: 'relative', height: 20, display: 'flex', alignItems: 'center' }}>
+      <div className="relative h-5 flex items-center">
         {baselinePct !== null && (
-          <div
-            style={{
-              position: 'absolute',
-              left: `${baselinePct}%`,
-              top: 2,
-              width: 2,
-              height: 16,
-              background: 'var(--color-text-muted)',
-              borderRadius: 1,
-              opacity: 0.5,
-              zIndex: 1,
-            }}
-            title={`Current: ${baseline}${unit}`}
-          />
+          <div className="absolute top-0.5 w-0.5 h-4 bg-text-muted rounded-sm opacity-50 z-[1]"
+            style={{ left: `${baselinePct}%` }}
+            title={`Current: ${baseline}${unit}`} />
         )}
-        <input
-          type="range"
-          min={min}
-          max={max}
-          step={step}
-          value={value}
+        <input type="range" min={min} max={max} step={step} value={value}
           onChange={(e) => onChange(Number(e.target.value))}
+          className="w-full h-1 appearance-none rounded-sm outline-none cursor-pointer"
           style={{
-            width: '100%',
-            height: 4,
-            appearance: 'none',
             background: `linear-gradient(to right, var(--color-accent) 0%, var(--color-accent) ${pct}%, var(--color-border) ${pct}%, var(--color-border) 100%)`,
-            borderRadius: 2,
-            outline: 'none',
-            cursor: 'pointer',
-          }}
-        />
+          }} />
       </div>
     </div>
   );

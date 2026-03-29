@@ -1,14 +1,18 @@
 import { useState, useMemo } from 'react';
 import { MapContainer, TileLayer, Marker, Tooltip, Polygon } from 'react-leaflet';
 import L from 'leaflet';
-import { Layers, Clock, ChevronDown, ChevronUp } from 'lucide-react';
-import { economicRegions, infrastructure, yearlySnapshots, INFRA_CATEGORIES } from '../data/mapData';
+import { Layers, Clock, ChevronDown, ChevronUp, Sparkles } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { economicRegions, infrastructure, yearlySnapshots, INFRA_CATEGORIES, hotspotCityLabelKey } from '../data/mapData';
 import RegionDetailPanel from '../components/map/RegionDetailPanel';
+import PredictedBadge from '../components/shared/PredictedBadge';
+import { useSettings } from '../context/SettingsContext';
+import { isPredictedYear, getRegionCO2, getRegionPerCapita } from '../utils/predictionEngine';
 import type { EconRegionGeo, InfraType } from '../data/mapData';
 
 function spotIcon(co2: number) {
-  const t = Math.min(1, Math.max(0, (co2 - 3000) / 10000));
-  const size = Math.round(16 + t * 24);
+  const scale = Math.min(1, Math.max(0, (co2 - 3000) / 10000));
+  const size = Math.round(16 + scale * 24);
   const dotSize = Math.round(size * 0.35);
   return L.divIcon({
     className: 'hotspot-marker',
@@ -18,19 +22,15 @@ function spotIcon(co2: number) {
   });
 }
 
-const infraEmojiMap: Record<string, string> = Object.fromEntries(
-  INFRA_CATEGORIES.map((c) => [c.key, c.emoji]),
-);
-const infraColorMap: Record<string, string> = Object.fromEntries(
-  INFRA_CATEGORIES.map((c) => [c.key, c.color]),
-);
+const infraEmojiMap: Record<string, string> = Object.fromEntries(INFRA_CATEGORIES.map((c) => [c.key, c.emoji]));
+const infraColorMap: Record<string, string> = Object.fromEntries(INFRA_CATEGORIES.map((c) => [c.key, c.color]));
 
 const STATUS_BADGE: Record<string, { bg: string; fg: string }> = {
-  operational:  { bg: 'rgba(34,197,94,0.15)',  fg: '#22C55E' },
-  development:  { bg: 'rgba(234,179,8,0.15)',  fg: '#EAB308' },
-  planned:      { bg: 'rgba(99,102,241,0.15)', fg: '#818CF8' },
-  evaluation:   { bg: 'rgba(168,85,247,0.15)', fg: '#A855F7' },
-  exploration:  { bg: 'rgba(6,182,212,0.15)',   fg: '#06B6D4' },
+  operational: { bg: 'rgba(34,197,94,0.15)', fg: '#22C55E' },
+  development: { bg: 'rgba(234,179,8,0.15)', fg: '#EAB308' },
+  planned: { bg: 'rgba(99,102,241,0.15)', fg: '#818CF8' },
+  evaluation: { bg: 'rgba(168,85,247,0.15)', fg: '#A855F7' },
+  exploration: { bg: 'rgba(6,182,212,0.15)', fg: '#06B6D4' },
 };
 
 function infraIcon(type: string) {
@@ -45,10 +45,11 @@ function infraIcon(type: string) {
 }
 
 const CENTER: [number, number] = [40.3, 48.0];
-
 const ALL_TYPES = new Set<InfraType>(INFRA_CATEGORIES.map((c) => c.key));
 
 export default function MapPage() {
+  const { t } = useTranslation();
+  const { resolvedTheme } = useSettings();
   const [layers, setLayers] = useState({ hotspots: true, regions: true, infra: true });
   const [year, setYear] = useState(2025);
   const [selectedRegion, setSelectedRegion] = useState<EconRegionGeo | null>(null);
@@ -56,87 +57,109 @@ export default function MapPage() {
   const [infraExpanded, setInfraExpanded] = useState(false);
 
   const snapshot = useMemo(() => yearlySnapshots.find(s => s.year === year), [year]);
+  const filteredInfra = useMemo(() => infrastructure.filter((p) => {
+    if (!activeInfraTypes.has(p.type)) return false;
+    if (p.yearStart > year) return false;
+    if (p.yearEnd !== null && year > p.yearEnd) return false;
+    return true;
+  }), [activeInfraTypes, year]);
 
-  const filteredInfra = useMemo(
-    () => infrastructure.filter((p) => activeInfraTypes.has(p.type)),
-    [activeInfraTypes],
-  );
-
-  const toggle = (key: keyof typeof layers) => setLayers(prev => ({ ...prev, [key]: !prev[key] }));
-
-  const toggleInfraType = (t: InfraType) =>
+  const toggleLayer = (key: keyof typeof layers) => setLayers(prev => ({ ...prev, [key]: !prev[key] }));
+  const toggleInfraType = (ty: InfraType) =>
     setActiveInfraTypes((prev) => {
       const next = new Set(prev);
-      if (next.has(t)) next.delete(t);
-      else next.add(t);
+      if (next.has(ty)) next.delete(ty); else next.add(ty);
       return next;
     });
 
+  const tileUrl = resolvedTheme === 'dark'
+    ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+    : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+
   return (
-    <div style={{ position: 'relative', height: 'calc(100vh - 64px)', display: 'flex' }}>
+    <div className="relative h-[calc(100vh-64px)] flex">
       <MapContainer center={CENTER} zoom={7} zoomControl={true} scrollWheelZoom={true}
         style={{ flex: 1, height: '100%' }}>
-        <TileLayer url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" attribution="" />
+        <TileLayer key={tileUrl} url={tileUrl} attribution="" />
 
-        {/* Region polygons */}
         {layers.regions && economicRegions.map((r) => (
-          <Polygon
-            key={r.name}
+          <Polygon key={r.name}
             positions={r.positions as L.LatLngExpression[][] | L.LatLngExpression[][][]}
             pathOptions={{ color: r.color, fillColor: r.color, fillOpacity: 0.18, weight: 1.5 }}
-            eventHandlers={{ click: () => setSelectedRegion(r) }}
-          >
+            eventHandlers={{ click: () => setSelectedRegion(r) }}>
             <Tooltip direction="top" className="hotspot-tooltip" opacity={1}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
-                  <span style={{ fontWeight: 700, fontSize: 12, color: 'var(--color-text-primary)' }}>{r.name}</span>
-                  <span style={{ fontSize: 10, color: 'var(--color-text-muted)' }}>{r.nameAz}</span>
+              <div className="flex flex-col gap-0.5 min-w-[180px]">
+                <div className="flex justify-between items-center gap-2.5">
+                  <span className="font-bold text-xs text-text-primary">{t(r.i18nKey)}</span>
+                  <span className="text-[10px] text-text-muted">{r.nameAz}</span>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: 3 }}>
-                  <span style={{ fontSize: 15, fontWeight: 800, color: '#22C55E' }}>{r.emissions.toLocaleString()}</span>
-                  <span style={{ fontSize: 10, color: 'var(--color-text-muted)' }}>kg CO₂</span>
+                <div className="flex items-baseline gap-0.5">
+                  <span className="text-[15px] font-extrabold text-[#22C55E]">{getRegionCO2(r.co2TotalKt, year).toLocaleString()}</span>
+                  <span className="text-[10px] text-text-muted">{t('common.ktCo2')}</span>
+                  <span className="text-[10px] ml-1" style={{ color: getRegionPerCapita(r.co2PerCapita, year) > 5 ? '#EF4444' : '#22C55E' }}>
+                    ({getRegionPerCapita(r.co2PerCapita, year)} {t('common.tCap')})
+                  </span>
                 </div>
-                <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: 3, display: 'flex', gap: 8, fontSize: 10, color: 'var(--color-text-muted)' }}>
+                <div className="border-t border-border pt-0.5 flex gap-2 text-[10px] text-text-muted">
                   <span>🏛️ {r.capital}</span>
-                  <span>📍 {r.districtsCount} districts</span>
+                  <span>👥 {(r.population / 1000).toFixed(0)}k</span>
+                  <span>📐 {r.areaKm2.toLocaleString()} km²</span>
                 </div>
               </div>
             </Tooltip>
           </Polygon>
         ))}
 
-        {/* Hotspot markers */}
         {layers.hotspots && snapshot?.spots.map((spot) => (
-          <Marker key={spot.name} position={[spot.lat, spot.lng]} icon={spotIcon(spot.co2)}>
+          <Marker key={spot.cityKey} position={[spot.lat, spot.lng]} icon={spotIcon(spot.co2)}>
             <Tooltip direction="top" offset={[0, -12]} className="hotspot-tooltip" opacity={1}>
-              <div style={{ fontWeight: 700, fontSize: 12 }}>{spot.name}</div>
-              <div style={{ fontSize: 16, fontWeight: 800, color: '#22C55E' }}>{spot.co2.toLocaleString()} <span style={{ fontSize: 10, color: 'var(--color-text-muted)' }}>kg</span></div>
+              <div className="font-bold text-xs">{t(hotspotCityLabelKey(spot.cityKey))}</div>
+              <div className="text-base font-extrabold text-[#22C55E]">
+                {spot.co2.toLocaleString()} <span className="text-[10px] text-text-muted">{t('common.kg')}</span>
+              </div>
             </Tooltip>
           </Marker>
         ))}
 
-        {/* Infrastructure — all 45 GeoJSON sites */}
         {layers.infra && filteredInfra.map((p) => {
           const badge = STATUS_BADGE[p.status] ?? STATUS_BADGE.operational;
+          const statusLabel = t(`map.status.${p.status}` as 'map.status.operational');
           return (
             <Marker key={p.id} position={[p.lat, p.lng]} icon={infraIcon(p.type)}>
               <Tooltip direction="top" className="hotspot-tooltip" opacity={1}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 3, maxWidth: 220 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
-                    <span style={{ fontWeight: 700, fontSize: 12, color: 'var(--color-text-primary)' }}>{p.name}</span>
-                    <span style={{ fontSize: 9, fontWeight: 600, padding: '1px 5px', borderRadius: 4,
-                      background: badge.bg, color: badge.fg, textTransform: 'capitalize', whiteSpace: 'nowrap' }}>
-                      {p.status}
+                <div className="flex flex-col gap-0.5 max-w-[240px]">
+                  <div className="flex justify-between items-center gap-2">
+                    <span className="font-bold text-xs text-text-primary">{p.name}</span>
+                    <span className="text-[9px] font-semibold px-1.5 py-px rounded capitalize whitespace-nowrap"
+                      style={{ background: badge.bg, color: badge.fg }}>
+                      {statusLabel}
                     </span>
                   </div>
-                  {p.capacity && (
-                    <div style={{ fontSize: 14, fontWeight: 800, color: '#22C55E' }}>{p.capacity}</div>
-                  )}
-                  {p.operator && (
-                    <div style={{ fontSize: 10, color: 'var(--color-text-muted)' }}>{p.operator}</div>
-                  )}
-                  {p.subType && (
-                    <div style={{ fontSize: 10, color: 'var(--color-text-muted)', textTransform: 'capitalize' }}>{p.subType}</div>
+                  {p.capacity && <div className="text-sm font-extrabold text-[#22C55E]">{p.capacity}</div>}
+                  {(() => {
+                    const yearIdx = year - 2023;
+                    const co2Val = p.co2Trend[yearIdx] ?? p.annualCo2Kt;
+                    const prevVal = yearIdx > 0 ? (p.co2Trend[yearIdx - 1] ?? p.annualCo2Kt) : co2Val;
+                    const changeNum = prevVal > 0 ? ((co2Val - prevVal) / prevVal * 100) : 0;
+                    const changeStr = changeNum >= 0 ? `↑ ${changeNum.toFixed(1)}%` : `↓ ${Math.abs(changeNum).toFixed(1)}%`;
+                    return co2Val > 0 ? (
+                      <div className="flex items-center gap-1.5 mt-0.5">
+                        <span className="text-[11px] font-bold" style={{ color: p.co2Scope === 'lifecycle' ? '#3B82F6' : '#EF4444' }}>
+                          {co2Val.toLocaleString()} kt CO₂
+                        </span>
+                        <span className="text-[9px] px-1 py-px rounded" style={{ background: p.co2Scope === 'lifecycle' ? 'rgba(59,130,246,0.15)' : 'rgba(239,68,68,0.1)', color: p.co2Scope === 'lifecycle' ? '#60A5FA' : '#F87171' }}>
+                          {p.co2Scope === 'lifecycle' ? '⚡ Lifecycle' : '🏭 Direct'}
+                        </span>
+                        {yearIdx > 0 && <span className={`text-[9px] ${changeNum <= 0 ? 'text-[#22C55E]' : 'text-[#EF4444]'}`}>{changeStr}</span>}
+                      </div>
+                    ) : null;
+                  })()}
+                  {p.operator && <div className="text-[10px] text-text-muted">{p.operator}</div>}
+                  {p.subType && <div className="text-[10px] text-text-muted capitalize">{p.subType}</div>}
+                  {year > 2025 && p.yearStart > 2025 && (
+                    <div className="flex items-center gap-1 mt-0.5 text-[9px] text-[#A855F7]">
+                      <Sparkles size={10} /> Built in {p.yearStart}
+                    </div>
                   )}
                 </div>
               </Tooltip>
@@ -145,52 +168,41 @@ export default function MapPage() {
         })}
       </MapContainer>
 
-      {/* Layer controls overlay */}
-      <div style={{
-        position: 'absolute', top: 16, left: 16, zIndex: 1000, background: 'var(--color-surface)',
-        border: '1px solid var(--color-border)', borderRadius: 10, padding: 12, width: 200,
-        maxHeight: 'calc(100vh - 140px)', overflowY: 'auto',
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
-          <Layers size={14} color="var(--color-accent)" />
-          <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--color-text-primary)' }}>Layers</span>
+      <div className="absolute top-4 left-4 z-10 bg-surface border border-border rounded-[10px] p-3 w-[200px]
+                       max-h-[calc(100vh-140px)] overflow-y-auto">
+        <div className="flex items-center gap-1.5 mb-2.5">
+          <Layers size={14} className="text-accent" />
+          <span className="text-[13px] font-bold text-text-primary">{t('map.layers')}</span>
         </div>
-
-        {([['hotspots', 'Hotspots'], ['regions', 'Regions']] as const).map(([k, label]) => (
-          <label key={k} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '4px 0', cursor: 'pointer', fontSize: 12, color: 'var(--color-text-muted)' }}>
-            <input type="checkbox" checked={layers[k]} onChange={() => toggle(k)}
-              style={{ accentColor: 'var(--color-accent)' }} />
-            {label}
+        {(['hotspots', 'regions'] as const).map((k) => (
+          <label key={k} className="flex items-center gap-2 py-1 cursor-pointer text-xs text-text-muted">
+            <input type="checkbox" checked={layers[k]} onChange={() => toggleLayer(k)} className="accent-accent" />
+            {k === 'hotspots' ? t('map.layer.hotspots') : t('map.layer.regions')}
           </label>
         ))}
-
-        {/* Infrastructure master toggle + expand */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '4px 0' }}>
-          <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 12, color: 'var(--color-text-muted)', flex: 1 }}>
-            <input type="checkbox" checked={layers.infra} onChange={() => toggle('infra')}
-              style={{ accentColor: 'var(--color-accent)' }} />
-            Infrastructure
-            <span style={{ fontSize: 10, opacity: 0.6 }}>({filteredInfra.length})</span>
+        <div className="flex items-center gap-1 py-1">
+          <label className="flex items-center gap-2 cursor-pointer text-xs text-text-muted flex-1">
+            <input type="checkbox" checked={layers.infra} onChange={() => toggleLayer('infra')} className="accent-accent" />
+            {t('map.layer.infra')}
+            <span className="text-[10px] opacity-60">({filteredInfra.length})</span>
           </label>
-          <button onClick={() => setInfraExpanded(!infraExpanded)}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 2, color: 'var(--color-text-muted)', display: 'flex' }}>
+          <button type="button" onClick={() => setInfraExpanded(!infraExpanded)}
+            className="bg-transparent border-none cursor-pointer p-0.5 text-text-muted flex">
             {infraExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
           </button>
         </div>
-
-        {/* Infrastructure sub-layer toggles */}
         {infraExpanded && layers.infra && (
-          <div style={{ paddingLeft: 18, display: 'flex', flexDirection: 'column', gap: 1 }}>
+          <div className="pl-[18px] flex flex-col gap-px">
             {INFRA_CATEGORIES.map((cat) => {
               const count = infrastructure.filter((p) => p.type === cat.key).length;
               return (
-                <label key={cat.key} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '3px 0', cursor: 'pointer', fontSize: 11, color: 'var(--color-text-muted)' }}>
+                <label key={cat.key} className="flex items-center gap-1.5 py-0.5 cursor-pointer text-[11px] text-text-muted">
                   <input type="checkbox" checked={activeInfraTypes.has(cat.key)}
                     onChange={() => toggleInfraType(cat.key)}
-                    style={{ accentColor: cat.color, width: 13, height: 13 }} />
+                    className="w-[13px] h-[13px]" style={{ accentColor: cat.color }} />
                   <span>{cat.emoji}</span>
-                  <span style={{ flex: 1 }}>{cat.label}</span>
-                  <span style={{ fontSize: 10, opacity: 0.5 }}>{count}</span>
+                  <span className="flex-1">{t(`infra.${cat.key}`)}</span>
+                  <span className="text-[10px] opacity-50">{count}</span>
                 </label>
               );
             })}
@@ -198,24 +210,18 @@ export default function MapPage() {
         )}
       </div>
 
-      {/* Time slider */}
-      <div style={{
-        position: 'absolute', bottom: 16, left: '50%', transform: 'translateX(-50%)', zIndex: 1000,
-        background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 10,
-        padding: '10px 20px', display: 'flex', alignItems: 'center', gap: 12, minWidth: 320,
-      }}>
-        <Clock size={14} color="var(--color-accent)" />
-        <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--color-text-primary)', minWidth: 36 }}>{year}</span>
-        <input
-          type="range" min={2020} max={2025} step={1} value={year}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 bg-surface border border-border
+                       rounded-[10px] px-5 py-2.5 flex items-center gap-3 min-w-[280px] sm:min-w-[400px]">
+        <Clock size={14} className="text-accent" />
+        <span className="text-[13px] font-bold text-text-primary min-w-[36px]">{year}</span>
+        <input type="range" min={2023} max={2030} step={1} value={year}
           onChange={(e) => setYear(Number(e.target.value))}
-          style={{ flex: 1, cursor: 'pointer', accentColor: 'var(--color-accent)' }}
-        />
+          className="flex-1 cursor-pointer accent-accent" />
+        <PredictedBadge type={isPredictedYear(year)} />
       </div>
 
-      {/* Region detail panel */}
       {selectedRegion && (
-        <RegionDetailPanel region={selectedRegion} onClose={() => setSelectedRegion(null)} />
+        <RegionDetailPanel region={selectedRegion} year={year} onClose={() => setSelectedRegion(null)} />
       )}
     </div>
   );

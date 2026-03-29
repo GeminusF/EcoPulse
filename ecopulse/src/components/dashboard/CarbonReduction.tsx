@@ -1,24 +1,15 @@
 import { ResponsiveContainer, AreaChart, Area } from 'recharts';
+import { useTranslation } from 'react-i18next';
 import { reductionSparkline } from '../../data/mockData';
 
 export default function CarbonReduction() {
+  const { t } = useTranslation();
   return (
-    <div
-      style={{
-        background: 'var(--color-surface)',
-        border: '1px solid var(--color-border)',
-        borderRadius: 12,
-        padding: 16,
-      }}
-    >
-      <p style={{ fontSize: 13, color: 'var(--color-text-muted)', fontWeight: 500 }}>
-        Carbon Reduction
-      </p>
-      <p style={{ fontSize: 28, fontWeight: 800, color: 'var(--color-accent)', marginTop: 4 }}>
-        -12%
-      </p>
-      <p style={{ fontSize: 12, color: 'var(--color-text-muted)' }}>This Month</p>
-      <div style={{ marginTop: 8 }}>
+    <div className="bg-surface border border-border rounded-xl p-4">
+      <p className="text-[13px] text-text-muted font-medium">{t('sidebar.carbonReduction')}</p>
+      <p className="text-[28px] font-extrabold text-accent mt-1">-12%</p>
+      <p className="text-xs text-text-muted">{t('sidebar.thisMonth')}</p>
+      <div className="mt-2">
         <ResponsiveContainer width="100%" height={50}>
           <AreaChart data={reductionSparkline}>
             <defs>
@@ -27,15 +18,8 @@ export default function CarbonReduction() {
                 <stop offset="100%" stopColor="#22C55E" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <Area
-              type="monotone"
-              dataKey="v"
-              stroke="#22C55E"
-              strokeWidth={2}
-              fill="url(#greenGrad)"
-              fillOpacity={1}
-              dot={false}
-            />
+            <Area type="monotone" dataKey="v" stroke="#22C55E" strokeWidth={2}
+              fill="url(#greenGrad)" fillOpacity={1} dot={false} />
           </AreaChart>
         </ResponsiveContainer>
       </div>

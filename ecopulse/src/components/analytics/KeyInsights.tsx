@@ -1,4 +1,5 @@
 import { TrendingUp, AlertTriangle, Info, AlertCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { keyInsights } from '../../data/analyticsData';
 
 const iconMap = {
@@ -9,17 +10,18 @@ const iconMap = {
 };
 
 export default function KeyInsights() {
+  const { t } = useTranslation();
   return (
-    <div className="card" style={{ padding: 16 }}>
-      <h3 style={{ fontSize: 14, fontWeight: 700, color: 'var(--color-text-primary)', marginBottom: 12 }}>Key Insights</h3>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10 }}>
+    <div className="card p-4">
+      <h3 className="text-sm font-bold text-text-primary mb-3">{t('analytics.keyInsights')}</h3>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
         {keyInsights.map((insight, i) => {
           const cfg = iconMap[insight.type];
           const Icon = cfg.icon;
           return (
-            <div key={i} style={{ display: 'flex', gap: 10, padding: 10, background: cfg.bg, borderRadius: 8 }}>
-              <Icon size={16} color={cfg.color} style={{ flexShrink: 0, marginTop: 2 }} />
-              <p style={{ fontSize: 12, lineHeight: 1.5, color: 'var(--color-text-secondary)' }}>{insight.text}</p>
+            <div key={i} className="flex gap-2.5 p-2.5 rounded-lg" style={{ background: cfg.bg }}>
+              <Icon size={16} color={cfg.color} className="shrink-0 mt-0.5" />
+              <p className="text-xs leading-relaxed text-text-secondary">{t(insight.insightKey)}</p>
             </div>
           );
         })}

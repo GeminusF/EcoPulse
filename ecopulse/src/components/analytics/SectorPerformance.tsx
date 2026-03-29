@@ -1,37 +1,38 @@
+import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { sectorPerformance } from '../../data/analyticsData';
 
 export default function SectorPerformance() {
+  const { t } = useTranslation();
+  const rows = useMemo(() => sectorPerformance, []);
+
   return (
     <div className="card">
-      <h3 style={{ fontSize: 16, fontWeight: 700, color: 'var(--color-text-primary)' }}>Sector Performance</h3>
-      <p style={{ fontSize: 13, color: 'var(--color-text-muted)', marginTop: 2, marginBottom: 16 }}>Progress toward emission targets</p>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-        {sectorPerformance.map((s) => {
+      <h3 className="text-base font-bold text-text-primary">{t('analytics.perf.title')}</h3>
+      <p className="text-[13px] text-text-muted mt-0.5 mb-4">{t('analytics.perf.sub')}</p>
+      <div className="flex flex-col gap-3">
+        {rows.map((s) => {
           const barWidth = Math.min(100, (s.current / s.target) * 100);
+          const sectorName = t(s.sectorKey);
           return (
-            <div key={s.sector} style={{ padding: 12, background: 'var(--color-surface-2)', borderRadius: 8 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--color-text-primary)' }}>{s.sector}</span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span style={{ fontSize: 12, color: 'var(--color-text-muted)' }}>{s.trend}</span>
-                  <span style={{
-                    fontSize: 16, fontWeight: 800, color: s.gradeColor,
-                    background: `${s.gradeColor}22`, padding: '2px 10px', borderRadius: 6,
-                  }}>
+            <div key={s.sectorKey} className="p-3 bg-surface-2 rounded-lg">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm font-semibold text-text-primary">{sectorName}</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-text-muted">{s.trend}</span>
+                  <span className="text-base font-extrabold rounded-md px-2.5 py-0.5"
+                    style={{ color: s.gradeColor, background: `${s.gradeColor}22` }}>
                     {s.grade}
                   </span>
                 </div>
               </div>
-              <div style={{ height: 6, background: 'var(--color-border)', borderRadius: 3, overflow: 'hidden' }}>
-                <div style={{
-                  height: '100%', borderRadius: 3, transition: 'width 0.6s ease',
-                  width: `${barWidth}%`,
-                  background: barWidth > 100 ? '#EF4444' : s.gradeColor,
-                }} />
+              <div className="h-1.5 bg-border rounded-full overflow-hidden">
+                <div className="h-full rounded-full transition-[width] duration-[600ms] ease-out"
+                  style={{ width: `${barWidth}%`, background: barWidth > 100 ? '#EF4444' : s.gradeColor }} />
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4, fontSize: 11, color: 'var(--color-text-muted)' }}>
-                <span>Current: {s.current.toLocaleString()} kg</span>
-                <span>Target: {s.target.toLocaleString()} kg</span>
+              <div className="flex justify-between mt-1 text-[11px] text-text-muted">
+                <span>{t('analytics.perf.current', { n: s.current.toLocaleString() })}</span>
+                <span>{t('analytics.perf.target', { n: s.target.toLocaleString() })}</span>
               </div>
             </div>
           );

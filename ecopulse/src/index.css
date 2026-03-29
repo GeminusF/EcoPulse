@@ -4,6 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Dark theme (default) ── */
 :root {
   --color-bg: #0A0A0A;
   --color-surface: #111111;
@@ -29,20 +30,43 @@
   --color-positive: #22C55E;
   --color-warning: #F59E0B;
   --color-danger: #EF4444;
+
+  --leaflet-bg: #0a1a1a;
+  --leaflet-tile: 'dark_all';
 }
 
+/* ── Light theme ── */
 .light {
   --color-bg: #F3F4F6;
   --color-surface: #FFFFFF;
   --color-surface-2: #F9FAFB;
-  --color-sidebar: #1A1A1A;
+  --color-sidebar: #FFFFFF;
+
   --color-border: #E5E7EB;
   --color-border-active: #D1D5DB;
+
+  --color-accent: #16A34A;
+  --color-accent-bright: #22C55E;
+  --color-accent-dim: #15803D;
+  --color-accent-glow: rgba(22, 163, 74, 0.1);
+
   --color-text-primary: #111827;
   --color-text-muted: #6B7280;
   --color-text-secondary: #4B5563;
+
+  --color-transport: #0891B2;
+  --color-energy: #D97706;
+  --color-industry: #7C3AED;
+
+  --color-positive: #16A34A;
+  --color-warning: #D97706;
+  --color-danger: #DC2626;
+
+  --leaflet-bg: #e8e8e8;
+  --leaflet-tile: 'light_all';
 }
 
+/* ── Base resets ── */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   background: var(--color-bg);
@@ -55,15 +79,13 @@ body {
 ::-webkit-scrollbar-track { background: var(--color-bg); }
 ::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 4px; }
 
+/* ── Reusable card ── */
 .card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
-  padding: 20px;
-  transition: border-color 0.2s ease;
+  @apply bg-surface border border-border rounded-xl p-5 transition-colors duration-200;
 }
 .card:hover { border-color: var(--color-border-active); }
 
+/* ── Animations ── */
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(12px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -75,14 +97,16 @@ body {
 .animate-fade-in { animation: fadeInUp 0.4s ease forwards; }
 .pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
 
-/* Leaflet dark-theme overrides */
+/* ── Leaflet theme overrides ── */
 .leaflet-container {
-  background: #0a1a1a;
+  background: var(--leaflet-bg);
   font-family: 'Inter', sans-serif;
+  z-index: 1; /* prevent map UI overlays from bleeding onto app modals */
+  isolation: isolate;
 }
 .leaflet-control-zoom a {
   background: var(--color-surface-2) !important;
-  color: white !important;
+  color: var(--color-text-primary) !important;
   border-color: var(--color-border) !important;
 }
 .leaflet-control-zoom a:hover {
@@ -113,13 +137,13 @@ body {
   background: #22C55E;
 }
 
-/* Custom Leaflet tooltip for hotspot hover */
+/* Custom Leaflet tooltip */
 .hotspot-tooltip {
   background: var(--color-surface) !important;
   border: 1px solid var(--color-border) !important;
   border-radius: 8px !important;
   padding: 8px 10px !important;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.5) !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3) !important;
   color: var(--color-text-primary) !important;
   font-family: 'Inter', sans-serif !important;
   font-size: 11px !important;
@@ -133,4 +157,157 @@ body {
 }
 .leaflet-tooltip-bottom.hotspot-tooltip::before {
   border-bottom-color: var(--color-surface) !important;
+}
+
+/* ── Mobile drawer overlay ── */
+.sidebar-overlay {
+  @apply fixed inset-0 bg-black/50 z-40 lg:hidden;
+}
+
+/* ── Toast Notifications ── */
+.toast-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 8px;
+  max-width: 380px;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  animation: toastSlideIn 0.3s ease forwards;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+}
+
+.toast-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.toast-msg {
+  font-size: 13px;
+  color: var(--color-text-primary);
+  flex: 1;
+}
+
+.toast-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  animation: toastProgress 4s linear forwards;
+}
+
+.toast-success .toast-icon { background: rgba(34,197,94,0.15); color: #22C55E; }
+.toast-success .toast-progress { background: #22C55E; }
+
+.toast-error .toast-icon { background: rgba(239,68,68,0.15); color: #EF4444; }
+.toast-error .toast-progress { background: #EF4444; }
+
+.toast-info .toast-icon { background: rgba(59,130,246,0.15); color: #3B82F6; }
+.toast-info .toast-progress { background: #3B82F6; }
+
+.toast-warning .toast-icon { background: rgba(245,158,11,0.15); color: #F59E0B; }
+.toast-warning .toast-progress { background: #F59E0B; }
+
+@keyframes toastSlideIn {
+  from { opacity: 0; transform: translateX(60px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes toastProgress {
+  from { width: 100%; }
+  to   { width: 0%; }
+}
+
+/* ── Skeleton pulse ── */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-pulse > div {
+  background: linear-gradient(90deg, var(--color-surface-2) 25%, var(--color-border) 50%, var(--color-surface-2) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* ── Accessibility ── */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Skip to content link */
+.skip-nav {
+  position: absolute;
+  top: -100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 16px;
+  background: var(--color-accent);
+  color: white;
+  border-radius: 0 0 8px 8px;
+  font-size: 13px;
+  font-weight: 600;
+  z-index: 9999;
+  text-decoration: none;
+}
+.skip-nav:focus {
+  top: 0;
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── Predicted data dashed line ── */
+.recharts-line.predicted {
+  stroke-dasharray: 6 4;
+}
+
+/* ── Line clamp utility ── */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }

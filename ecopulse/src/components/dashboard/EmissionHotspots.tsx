@@ -1,6 +1,9 @@
 import { MapContainer, TileLayer, Marker, Tooltip } from 'react-leaflet';
 import L from 'leaflet';
+import type { TFunction } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { hotspots } from '../../data/mockData';
+import { useSettings } from '../../context/SettingsContext';
 
 const CO2_MIN = 3800;
 const CO2_MAX = 12600;
@@ -25,86 +28,61 @@ function createHotspotIcon(intensity: 'high' | 'medium', co2: number) {
   });
 }
 
-function buildTooltipHtml(spot: (typeof hotspots)[number]) {
+function buildTooltipHtml(
+  spot: (typeof hotspots)[number],
+  t: TFunction,
+) {
   const changeColor = spot.change.startsWith('↑') ? '#22C55E' : '#EF4444';
+  const name = t(spot.nameKey);
+  const top = t(spot.topSourceKey);
+  const kg = t('common.kgCo2');
   return `
     <div style="display:flex;flex-direction:column;gap:4px">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
-        <span style="font-weight:700;font-size:12px;color:var(--color-text-primary)">${spot.name}</span>
+        <span style="font-weight:700;font-size:12px;color:var(--color-text-primary)">${name}</span>
         <span style="font-size:10px;font-weight:600;color:${changeColor}">${spot.change}</span>
       </div>
       <div style="display:flex;align-items:baseline;gap:3px">
         <span style="font-size:16px;font-weight:800;color:#22C55E">${spot.co2.toLocaleString()}</span>
-        <span style="font-size:10px;color:var(--color-text-muted)">kg CO₂</span>
+        <span style="font-size:10px;color:var(--color-text-muted)">${kg}</span>
       </div>
       <div style="border-top:1px solid var(--color-border);padding-top:4px;font-size:10px;color:var(--color-text-muted)">
-        ${spot.topSource}
+        ${top}
       </div>
     </div>
   `;
 }
 
 const AZERBAIJAN_CENTER: [number, number] = [40.3, 48.0];
-const DEFAULT_ZOOM = 7;
 
 export default function EmissionHotspots() {
+  const { t } = useTranslation();
+  const { resolvedTheme } = useSettings();
+  const tileUrl = resolvedTheme === 'dark'
+    ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+    : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+
   return (
-    <div className="card" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden', position: 'relative' }}>
-      <h3 style={{ fontSize: 16, fontWeight: 700, color: 'var(--color-text-primary)' }}>
-        Emission Hotspots in Azerbaijan
-      </h3>
-      <p style={{ fontSize: 13, color: 'var(--color-text-muted)', marginTop: 2 }}>
-        Real-time monitoring of key regions
-      </p>
+    <div className="card flex flex-col overflow-hidden relative">
+      <h3 className="text-base font-bold text-text-primary">{t('dash.hotspot.title')}</h3>
+      <p className="text-[13px] text-text-muted mt-0.5">{t('dash.hotspot.subtitle')}</p>
 
-      <div style={{ position: 'relative', flex: 1, borderRadius: 8, overflow: 'hidden', marginTop: 12, minHeight: 220 }}>
-        <MapContainer
-          center={AZERBAIJAN_CENTER}
-          zoom={DEFAULT_ZOOM}
-          zoomControl={true}
-          scrollWheelZoom={true}
-          style={{ width: '100%', height: '100%', minHeight: 220, borderRadius: 8 }}
-        >
-          <TileLayer
-            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-            attribution=""
-          />
-
+      <div className="relative flex-1 rounded-lg overflow-hidden mt-3 min-h-[220px]">
+        <MapContainer center={AZERBAIJAN_CENTER} zoom={7} zoomControl={true} scrollWheelZoom={true}
+          style={{ width: '100%', height: '100%', minHeight: 220, borderRadius: 8 }}>
+          <TileLayer key={tileUrl} url={tileUrl} attribution="" />
           {hotspots.map((spot) => (
-            <Marker
-              key={spot.name}
-              position={[spot.lat, spot.lng]}
-              icon={createHotspotIcon(spot.intensity, spot.co2)}
-            >
-              <Tooltip
-                direction="top"
-                offset={[0, -14]}
-                className="hotspot-tooltip"
-                opacity={1}
-              >
-                <div dangerouslySetInnerHTML={{ __html: buildTooltipHtml(spot) }} />
+            <Marker key={spot.id} position={[spot.lat, spot.lng]}
+              icon={createHotspotIcon(spot.intensity, spot.co2)}>
+              <Tooltip direction="top" offset={[0, -14]} className="hotspot-tooltip" opacity={1}>
+                <div dangerouslySetInnerHTML={{ __html: buildTooltipHtml(spot, t) }} />
               </Tooltip>
             </Marker>
           ))}
         </MapContainer>
-
-        {/* Legend overlay */}
-        <div
-          style={{
-            position: 'absolute',
-            bottom: 12,
-            left: 12,
-            zIndex: 1000,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 6,
-            background: 'rgba(0,0,0,0.6)',
-            borderRadius: 6,
-            padding: '4px 10px',
-          }}
-        >
-          <div className="pulse-glow" style={{ width: 8, height: 8, borderRadius: '50%', background: '#22C55E' }} />
-          <span style={{ fontSize: 12, color: 'var(--color-text-muted)' }}>High Emission</span>
+        <div className="absolute bottom-3 left-3 z-10 flex items-center gap-1.5 bg-black/60 rounded-md px-2.5 py-1">
+          <div className="pulse-glow w-2 h-2 rounded-full bg-[#22C55E]" />
+          <span className="text-xs text-text-muted">{t('dash.hotspot.highEmission')}</span>
         </div>
       </div>
     </div>

@@ -1,111 +1,148 @@
-import { X, MapPin, Building2 } from 'lucide-react';
-import { ResponsiveContainer, BarChart, Bar, XAxis, Tooltip, Cell } from 'recharts';
+import { X, MapPin, Users, Ruler, Building2, Factory } from 'lucide-react';
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell } from 'recharts';
+import { useTranslation } from 'react-i18next';
 import type { EconRegionGeo } from '../../data/mapData';
+import { getRegionCO2, getRegionPerCapita, scaleByYear, isPredictedYear } from '../../utils/predictionEngine';
+import PredictedBadge from '../shared/PredictedBadge';
 
 interface Props {
   region: EconRegionGeo;
+  year: number;
   onClose: () => void;
 }
 
-export default function RegionDetailPanel({ region, onClose }: Props) {
-  const data = [
-    { name: 'Transport', value: Math.round(region.emissions * 0.34), color: '#22D3EE' },
-    { name: 'Energy', value: Math.round(region.emissions * 0.51), color: '#F59E0B' },
-    { name: 'Industry', value: Math.round(region.emissions * 0.15), color: '#A855F7' },
+const SECTOR_COLORS: Record<string, string> = {
+  energy: '#F59E0B',
+  transport: '#22D3EE',
+  industry: '#A855F7',
+  residential: '#F97316',
+  other: '#6B7280',
+};
+
+export default function RegionDetailPanel({ region, year, onClose }: Props) {
+  const { t } = useTranslation();
+  const s = region.co2Sectors;
+  const scaledTotal = getRegionCO2(region.co2TotalKt, year);
+  const scaledPerCapita = getRegionPerCapita(region.co2PerCapita, year);
+  const sectorData = [
+    { key: 'energy', value: scaleByYear(s.energyKt, year), pct: s.energyPct, color: SECTOR_COLORS.energy },
+    { key: 'transport', value: scaleByYear(s.transportKt, year), pct: s.transportPct, color: SECTOR_COLORS.transport },
+    { key: 'industry', value: scaleByYear(s.industryKt, year), pct: s.industryPct, color: SECTOR_COLORS.industry },
+    { key: 'residential', value: scaleByYear(s.residentialKt, year), pct: s.residentialPct, color: SECTOR_COLORS.residential },
+    { key: 'other', value: scaleByYear(s.otherKt, year), pct: s.otherPct, color: SECTOR_COLORS.other },
+  ].map((row) => ({
+    ...row,
+    name: t(`sector.chart.${row.key}`),
+  }));
+  const perCapitaColor = scaledPerCapita > 5 ? '#EF4444' : scaledPerCapita > 3 ? '#EAB308' : '#22C55E';
+
+  const statItems = [
+    { icon: <MapPin size={12} />, labelKey: 'region.capital', value: region.capital },
+    { icon: <Users size={12} />, labelKey: 'region.population', value: `${(region.population / 1000).toFixed(0)}k` },
+    { icon: <Ruler size={12} />, labelKey: 'region.area', value: `${region.areaKm2.toLocaleString()} km²` },
+    { icon: <Building2 size={12} />, labelKey: 'region.districts', value: String(region.districtsCount) },
   ];
 
   return (
-    <div style={{
-      position: 'absolute', top: 0, right: 0, width: 320, height: '100%', zIndex: 1000,
-      background: 'var(--color-surface)', borderLeft: '1px solid var(--color-border)',
-      display: 'flex', flexDirection: 'column', overflow: 'auto',
-    }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 16px 0' }}>
+    <div className="absolute top-0 right-0 w-full sm:w-[340px] h-full z-[1000] bg-surface border-l border-border
+                     flex flex-col overflow-auto">
+      <div className="flex justify-between items-center px-4 pt-4">
         <div>
-          <h3 style={{ fontSize: 16, fontWeight: 700, color: 'var(--color-text-primary)' }}>{region.name}</h3>
-          <p style={{ fontSize: 11, color: 'var(--color-text-muted)', marginTop: 2 }}>{region.nameAz}</p>
+          <div className="flex items-center gap-2">
+            <h3 className="text-base font-bold text-text-primary">{t(region.i18nKey)}</h3>
+            <PredictedBadge type={isPredictedYear(year)} />
+          </div>
+          <p className="text-[11px] text-text-muted mt-0.5">{region.nameAz} — {year}</p>
         </div>
-        <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}>
-          <X size={18} color="var(--color-text-muted)" />
+        <button type="button" onClick={onClose} className="bg-transparent border-none cursor-pointer p-1 text-text-muted hover:text-text-primary">
+          <X size={18} />
         </button>
       </div>
 
-      <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 14 }}>
-        {/* Quick stats */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-          <div style={{ background: 'var(--color-surface-2)', borderRadius: 8, padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: 4 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 5, color: 'var(--color-text-muted)' }}>
-              <MapPin size={13} />
-              <span style={{ fontSize: 10 }}>Capital</span>
+      <div className="p-4 flex flex-col gap-3">
+        <div className="grid grid-cols-2 gap-2">
+          {statItems.map((stat) => (
+            <div key={stat.labelKey} className="bg-surface-2 rounded-lg px-2.5 py-2">
+              <div className="flex items-center gap-1 text-text-muted mb-0.5">
+                {stat.icon}
+                <span className="text-[10px]">{t(stat.labelKey)}</span>
+              </div>
+              <span className="text-[13px] font-bold text-text-primary">{stat.value}</span>
             </div>
-            <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--color-text-primary)' }}>{region.capital}</span>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-2 gap-2">
+          <div className="bg-surface-2 rounded-lg p-2.5">
+            <p className="text-[10px] text-text-muted">{t('region.totalCo2')}</p>
+            <p className="text-[22px] font-extrabold text-accent">{scaledTotal.toLocaleString()}</p>
+            <p className="text-[10px] text-text-muted">{t('region.ktYear')}</p>
           </div>
-          <div style={{ background: 'var(--color-surface-2)', borderRadius: 8, padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: 4 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 5, color: 'var(--color-text-muted)' }}>
-              <Building2 size={13} />
-              <span style={{ fontSize: 10 }}>Districts</span>
-            </div>
-            <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--color-text-primary)' }}>{region.districtsCount}</span>
+          <div className="bg-surface-2 rounded-lg p-2.5">
+            <p className="text-[10px] text-text-muted">{t('region.perCapita')}</p>
+            <p className="text-[22px] font-extrabold" style={{ color: perCapitaColor }}>{scaledPerCapita}</p>
+            <p className="text-[10px] text-text-muted">{t('region.tonnesPerson')}</p>
           </div>
         </div>
 
-        {/* Emissions card + intensity */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-          <div style={{ background: 'var(--color-surface-2)', borderRadius: 8, padding: 12 }}>
-            <p style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>Total Emissions</p>
-            <p style={{ fontSize: 20, fontWeight: 800, color: 'var(--color-accent)' }}>{region.emissions.toLocaleString()}</p>
-            <p style={{ fontSize: 10, color: 'var(--color-text-muted)' }}>kg CO₂</p>
-          </div>
-          <div style={{ background: 'var(--color-surface-2)', borderRadius: 8, padding: 12 }}>
-            <p style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>Intensity</p>
-            <p style={{ fontSize: 20, fontWeight: 800, color: region.emissions > 5000 ? '#EF4444' : '#22C55E' }}>
-              {region.emissions > 10000 ? 'Very High' : region.emissions > 5000 ? 'High' : region.emissions > 2000 ? 'Medium' : 'Low'}
-            </p>
-          </div>
-        </div>
-
-        {/* Intensity badge */}
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px',
-          borderRadius: 8, background: region.emissions > 5000 ? 'rgba(239,68,68,0.1)' : 'rgba(34,197,94,0.1)',
-        }}>
-          <div style={{
-            width: 8, height: 8, borderRadius: '50%',
-            background: region.emissions > 10000 ? '#EF4444' : region.emissions > 5000 ? '#F59E0B' : region.emissions > 2000 ? '#EAB308' : '#22C55E',
-          }} />
-          <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--color-text-primary)' }}>
-            {region.emissions > 10000 ? 'Very High' : region.emissions > 5000 ? 'High' : region.emissions > 2000 ? 'Medium' : 'Low'} Emission Intensity
-          </span>
-        </div>
-
-        {/* Districts list */}
         <div>
-          <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-text-muted)', marginBottom: 8 }}>Districts</p>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+          <p className="text-[13px] font-semibold text-text-muted mb-1.5">{t('region.co2BySector')}</p>
+          <ResponsiveContainer width="100%" height={150}>
+            <BarChart data={sectorData} layout="vertical" margin={{ left: 0, right: 8 }}>
+              <XAxis type="number" tick={{ fontSize: 9, fill: '#6B7280' }} axisLine={false} tickLine={false} />
+              <YAxis type="category" dataKey="name" tick={{ fontSize: 10, fill: '#6B7280' }} axisLine={false} tickLine={false} width={70} />
+              <Tooltip
+                contentStyle={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 8, fontSize: 12 }}
+                formatter={(v) => [`${Number(v).toLocaleString()} kt`, '']} />
+              <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={18}>
+                {sectorData.map((d, i) => <Cell key={i} fill={d.color} />)}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="flex flex-col gap-1">
+          {sectorData.map((d) => (
+            <div key={d.key} className="flex items-center gap-1.5">
+              <div className="w-2 h-2 rounded-sm shrink-0" style={{ background: d.color }} />
+              <span className="text-[11px] text-text-muted flex-1">{d.name}</span>
+              <span className="text-[11px] font-semibold text-text-primary min-w-[40px] text-right">{d.pct}%</span>
+              <span className="text-[10px] text-text-muted min-w-[50px] text-right">{d.value.toLocaleString()} kt</span>
+            </div>
+          ))}
+        </div>
+
+        {region.mainIndustries.length > 0 && (
+          <div>
+            <div className="flex items-center gap-1.5 text-text-muted mb-1.5">
+              <Factory size={12} />
+              <span className="text-xs font-semibold">{t('region.keyIndustries')}</span>
+            </div>
+            <div className="flex flex-wrap gap-1">
+              {region.mainIndustries.map((ind) => (
+                <span key={ind} className="text-[10px] px-2 py-0.5 rounded-md bg-surface-2 text-text-muted border border-border">
+                  {ind}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div>
+          <div className="flex items-center gap-1.5 text-text-muted mb-1.5">
+            <Building2 size={12} />
+            <span className="text-xs font-semibold">{t('region.districtsCities')}</span>
+          </div>
+          <div className="flex flex-wrap gap-1">
             {region.districts.map((d) => (
-              <span key={d} style={{
-                fontSize: 10, padding: '3px 8px', borderRadius: 6,
-                background: 'var(--color-surface-2)', color: 'var(--color-text-muted)',
-                border: '1px solid var(--color-border)',
-              }}>
+              <span key={d} className={`text-[10px] px-2 py-0.5 rounded-md border
+                ${region.cities.includes(d)
+                  ? 'bg-[rgba(34,197,94,0.1)] text-[#22C55E] border-[rgba(34,197,94,0.25)]'
+                  : 'bg-surface-2 text-text-muted border-border'}`}>
                 {d}
               </span>
             ))}
           </div>
-        </div>
-
-        {/* Sector breakdown chart */}
-        <div>
-          <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-text-muted)', marginBottom: 8 }}>Sector Breakdown</p>
-          <ResponsiveContainer width="100%" height={140}>
-            <BarChart data={data} margin={{ left: -10 }}>
-              <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#6B7280' }} axisLine={false} tickLine={false} />
-              <Tooltip contentStyle={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 8, fontSize: 12 }} />
-              <Bar dataKey="value" radius={[4, 4, 0, 0]} barSize={28}>
-                {data.map((d, i) => <Cell key={i} fill={d.color} />)}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
         </div>
       </div>
     </div>

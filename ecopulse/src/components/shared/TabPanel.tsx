@@ -1,7 +1,4 @@
-interface Tab {
-  id: string;
-  label: string;
-}
+interface Tab { id: string; label: string; }
 
 interface Props {
   tabs: Tab[];
@@ -11,25 +8,13 @@ interface Props {
 
 export default function TabPanel({ tabs, active, onChange }: Props) {
   return (
-    <div style={{ display: 'flex', gap: 4, background: 'var(--color-surface-2)', borderRadius: 8, padding: 4 }}>
+    <div className="flex gap-1 bg-surface-2 rounded-lg p-1">
       {tabs.map((t) => (
-        <button
-          key={t.id}
-          onClick={() => onChange(t.id)}
-          style={{
-            flex: 1,
-            padding: '8px 16px',
-            borderRadius: 6,
-            border: 'none',
-            cursor: 'pointer',
-            fontSize: 13,
-            fontWeight: active === t.id ? 600 : 500,
-            fontFamily: 'inherit',
-            background: active === t.id ? 'var(--color-surface)' : 'transparent',
-            color: active === t.id ? 'var(--color-accent)' : 'var(--color-text-muted)',
-            transition: 'all 0.15s ease',
-          }}
-        >
+        <button key={t.id} onClick={() => onChange(t.id)}
+          className={`flex-1 px-4 py-2 rounded-md border-none cursor-pointer text-[13px] font-sans transition-all duration-150
+            ${active === t.id
+              ? 'bg-surface text-accent font-semibold'
+              : 'bg-transparent text-text-muted font-medium hover:text-text-primary'}`}>
           {t.label}
         </button>
       ))}

@@ -1,4 +1,5 @@
 import { Car, Sun, Factory, Scale } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { policyPacks } from '../../data/simulationData';
 import type { LeverValues } from '../../data/simulationData';
 
@@ -10,31 +11,25 @@ interface Props {
 }
 
 export default function PolicyPacks({ onSelect, activePack }: Props) {
+  const { t } = useTranslation();
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
       {policyPacks.map((p) => {
         const Icon = iconMap[p.icon] ?? Scale;
         const isActive = activePack === p.id;
         return (
-          <button
-            key={p.id}
-            onClick={() => onSelect(p.levers)}
-            className="card"
+          <button key={p.id} type="button" onClick={() => onSelect(p.levers)}
+            className="card cursor-pointer p-4 text-left transition-colors"
             style={{
-              cursor: 'pointer', padding: 16, textAlign: 'left',
               borderColor: isActive ? p.color : undefined,
               background: isActive ? `${p.color}11` : undefined,
-            }}
-          >
-            <div style={{
-              width: 36, height: 36, borderRadius: 8,
-              background: `${p.color}22`, display: 'flex', alignItems: 'center', justifyContent: 'center',
-              marginBottom: 10,
             }}>
+            <div className="w-9 h-9 rounded-lg flex items-center justify-center mb-2.5"
+              style={{ background: `${p.color}22` }}>
               <Icon size={18} color={p.color} />
             </div>
-            <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--color-text-primary)' }}>{p.name}</p>
-            <p style={{ fontSize: 11, color: 'var(--color-text-muted)', marginTop: 4, lineHeight: 1.4 }}>{p.description}</p>
+            <p className="text-sm font-bold text-text-primary">{t(`sim.pack.${p.id}.name`)}</p>
+            <p className="text-[11px] text-text-muted mt-1 leading-snug">{t(`sim.pack.${p.id}.desc`)}</p>
           </button>
         );
       })}

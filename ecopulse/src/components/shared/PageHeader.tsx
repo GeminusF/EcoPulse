@@ -8,10 +8,10 @@ interface Props {
 
 export default function PageHeader({ title, subtitle, action }: Props) {
   return (
-    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 20 }}>
+    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
       <div>
-        <h1 style={{ fontSize: 32, fontWeight: 800 }}>{title}</h1>
-        <p style={{ color: 'var(--color-text-muted)', fontSize: 14, marginTop: 4 }}>{subtitle}</p>
+        <h1 className="text-2xl md:text-[32px] font-extrabold text-text-primary">{title}</h1>
+        <p className="text-text-muted text-sm mt-1">{subtitle}</p>
       </div>
       {action && <div>{action}</div>}
     </div>

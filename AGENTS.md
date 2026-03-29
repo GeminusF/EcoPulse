@@ -22,3 +22,12 @@ These defaults are optimized for AI coding agents (and humans) working on apps t
   needed. Always curl https://ai-gateway.vercel.sh/v1/models first; never trust model IDs from memory
 - For durable agent loops or untrusted code: use Workflow (pause/resume/state) + Sandbox; use Vercel MCP for secure infra access
 <!-- VERCEL BEST PRACTICES END -->
+
+## Internationalization (i18n)
+- ALWAYS implement texts and features in three languages: English (en), Azerbaijani (az), and French (fr). Any new keys added to `en.json` MUST also be added to `az.json` and `fr.json`.
+
+## Data Integrity Rules
+- **No hardcoded data**: All dates, CO₂ values, region statistics, and infrastructure metadata MUST be fetched from their respective source files — never hardcoded inline in components.
+- **Single source of truth for regions**: Use `azerbaijan_economic_regions_main.geojson` (imported as `src/data/economicRegions.json`) for ALL economic region data across the app (Map, Analytics, Dashboard).
+- **Single source of truth for infrastructure**: Use `azerbaijan_energy_sites.geojson` (imported as `src/data/energySites.json`) for ALL infrastructure data.
+- **Prediction engine as central data source**: All emissions projections (2023–2030) MUST use `src/utils/predictionEngine.ts` — no separate inline data arrays.

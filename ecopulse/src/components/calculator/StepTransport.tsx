@@ -1,70 +1,48 @@
 import { Car, Plane } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { vehicleTypes } from '../../data/calculatorData';
 
 interface Props {
   commuteKm: number;
   vehicleType: string;
-  flightsPerYear: number;
+  flightKm: number;
   onChange: (field: string, value: number | string) => void;
 }
 
-export default function StepTransport({ commuteKm, vehicleType, flightsPerYear, onChange }: Props) {
+export default function StepTransport({ commuteKm, vehicleType, flightKm, onChange }: Props) {
+  const { t } = useTranslation();
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+    <div className="flex flex-col gap-5">
       <div>
-        <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-          <Car size={16} color="#22D3EE" /> Daily Commute Distance (km)
+        <label className="text-[13px] font-semibold text-text-muted flex items-center gap-2 mb-2">
+          <Car size={16} className="text-transport" /> Monthly Driving Distance (km)
         </label>
-        <input
-          type="number"
-          value={commuteKm}
-          onChange={(e) => onChange('commuteKm', Number(e.target.value))}
-          style={{
-            width: '100%', padding: '12px 16px', background: 'var(--color-surface-2)',
-            border: '1px solid var(--color-border)', borderRadius: 8, color: 'var(--color-text-primary)',
-            fontSize: 15, fontWeight: 600, outline: 'none', fontFamily: 'inherit',
-          }}
-        />
+        <input type="number" value={commuteKm} onChange={(e) => onChange('commuteKm', Number(e.target.value))}
+          className="w-full px-4 py-3 bg-surface-2 border border-border rounded-lg text-text-primary text-[15px] font-semibold outline-none font-sans" />
       </div>
 
       <div>
-        <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-text-muted)', marginBottom: 8, display: 'block' }}>
-          Vehicle Type
-        </label>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
+        <label className="text-[13px] font-semibold text-text-muted block mb-2">{t('calc.transport.vehicleType')}</label>
+        <div className="grid grid-cols-3 gap-2">
           {vehicleTypes.map((v) => (
-            <button
-              key={v.id}
-              onClick={() => onChange('vehicleType', v.id)}
-              style={{
-                padding: '10px 8px', borderRadius: 8, border: '1px solid',
-                borderColor: vehicleType === v.id ? 'var(--color-accent)' : 'var(--color-border)',
-                background: vehicleType === v.id ? 'var(--color-accent-glow)' : 'var(--color-surface-2)',
-                color: vehicleType === v.id ? 'var(--color-accent)' : 'var(--color-text-muted)',
-                fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
-                transition: 'all 0.15s',
-              }}
-            >
-              {v.label}
+            <button key={v.id} type="button" onClick={() => onChange('vehicleType', v.id)}
+              className={`py-2.5 px-2 rounded-lg border text-xs font-semibold cursor-pointer font-sans transition-all
+                ${vehicleType === v.id
+                  ? 'border-accent bg-accent-glow text-accent'
+                  : 'border-border bg-surface-2 text-text-muted hover:border-border-active'}`}>
+              {t(v.labelKey)}
             </button>
           ))}
         </div>
       </div>
 
       <div>
-        <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-          <Plane size={16} color="#A855F7" /> Flights Per Year
+        <label className="text-[13px] font-semibold text-text-muted flex items-center gap-2 mb-2">
+          <Plane size={16} className="text-industry" /> {/* Flight Distance (km/year) */}
+          Flight Distance (km/year)
         </label>
-        <input
-          type="number"
-          value={flightsPerYear}
-          onChange={(e) => onChange('flightsPerYear', Number(e.target.value))}
-          style={{
-            width: '100%', padding: '12px 16px', background: 'var(--color-surface-2)',
-            border: '1px solid var(--color-border)', borderRadius: 8, color: 'var(--color-text-primary)',
-            fontSize: 15, fontWeight: 600, outline: 'none', fontFamily: 'inherit',
-          }}
-        />
+        <input type="number" value={flightKm} onChange={(e) => onChange('flightKm', Number(e.target.value))}
+          className="w-full px-4 py-3 bg-surface-2 border border-border rounded-lg text-text-primary text-[15px] font-semibold outline-none font-sans" />
       </div>
     </div>
   );

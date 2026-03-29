@@ -1,68 +1,97 @@
-import { dietTypes } from '../../data/calculatorData';
+
+import { ShoppingBag, Droplets, Laptop, Shirt, Recycle } from 'lucide-react';
 
 interface Props {
-  diet: string;
-  shoppingScore: number;
+  beefKg: number;
+  chickenKg: number;
+  vegKg: number;
+  shoppingSpend: number;
   recyclingPct: number;
+  waterM3: number;
+  clothingItems: number;
+  digitalHours: number;
   onChange: (field: string, value: number | string) => void;
 }
 
-export default function StepLifestyle({ diet, shoppingScore, recyclingPct, onChange }: Props) {
+export default function StepLifestyle({
+  beefKg, chickenKg, vegKg, shoppingSpend, recyclingPct, waterM3, clothingItems, digitalHours, onChange
+}: Props) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+    <div className="flex flex-col gap-5">
+      
+      {/* Food Consumption */}
       <div>
-        <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-text-muted)', marginBottom: 8, display: 'block' }}>
-          Diet Type
+        <label className="text-[13px] font-bold text-text-primary block mb-3 border-b border-border pb-1">Food Consumption (kg / month)</label>
+        <div className="grid grid-cols-3 gap-3">
+          <div>
+            <label className="text-[11px] font-semibold text-text-muted mb-1 block">Beef / Red Meat</label>
+            <input type="number" min={0} value={beefKg} onChange={(e) => onChange('beefKg', Number(e.target.value))}
+              className="w-full px-3 py-2 bg-surface-2 border border-border rounded-lg text-sm text-text-primary font-semibold outline-none focus:border-accent" />
+          </div>
+          <div>
+            <label className="text-[11px] font-semibold text-text-muted mb-1 block">Chicken / White</label>
+            <input type="number" min={0} value={chickenKg} onChange={(e) => onChange('chickenKg', Number(e.target.value))}
+              className="w-full px-3 py-2 bg-surface-2 border border-border rounded-lg text-sm text-text-primary font-semibold outline-none focus:border-accent" />
+          </div>
+          <div>
+            <label className="text-[11px] font-semibold text-text-muted mb-1 block">Vegetables</label>
+            <input type="number" min={0} value={vegKg} onChange={(e) => onChange('vegKg', Number(e.target.value))}
+              className="w-full px-3 py-2 bg-surface-2 border border-border rounded-lg text-sm text-text-primary font-semibold outline-none focus:border-accent" />
+          </div>
+        </div>
+      </div>
+
+      {/* Shopping & Utilities */}
+      <label className="text-[13px] font-bold text-text-primary block mb-1 mt-2 border-b border-border pb-1">Shopping & Leisure</label>
+
+      <div>
+        <label className="text-[13px] font-semibold text-text-muted flex items-center gap-2 mb-2">
+          <ShoppingBag size={16} className="text-secondary" /> Monthly Discretionary Spend ($)
         </label>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-          {dietTypes.map((d) => (
-            <button
-              key={d.id}
-              onClick={() => onChange('diet', d.id)}
-              style={{
-                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                padding: '10px 16px', borderRadius: 8, border: '1px solid',
-                borderColor: diet === d.id ? 'var(--color-accent)' : 'var(--color-border)',
-                background: diet === d.id ? 'var(--color-accent-glow)' : 'var(--color-surface-2)',
-                color: diet === d.id ? 'var(--color-accent)' : 'var(--color-text-primary)',
-                fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
-                transition: 'all 0.15s',
-              }}
-            >
-              <span>{d.label}</span>
-              <span style={{ fontSize: 12, color: 'var(--color-text-muted)' }}>{d.kgPerYear.toLocaleString()} kg/yr</span>
-            </button>
-          ))}
+        <input type="number" value={shoppingSpend} onChange={(e) => onChange('shoppingSpend', Number(e.target.value))}
+          className="w-full px-4 py-3 bg-surface-2 border border-border rounded-lg text-text-primary text-[15px] font-semibold outline-none font-sans" />
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="text-[13px] font-semibold text-text-muted flex items-center gap-2 mb-2">
+            <Shirt size={16} className="text-accent" /> New Clothes (items/mo)
+          </label>
+          <input type="number" value={clothingItems} onChange={(e) => onChange('clothingItems', Number(e.target.value))}
+            className="w-full px-4 py-3 bg-surface-2 border border-border rounded-lg text-text-primary text-[15px] font-semibold outline-none font-sans" />
+        </div>
+        <div>
+          <label className="text-[13px] font-semibold text-text-muted flex items-center gap-2 mb-2">
+            <Laptop size={16} className="text-[#3B82F6]" /> Streaming (hrs/day)
+          </label>
+          <input type="number" value={digitalHours} onChange={(e) => onChange('digitalHours', Number(e.target.value))}
+            className="w-full px-4 py-3 bg-surface-2 border border-border rounded-lg text-text-primary text-[15px] font-semibold outline-none font-sans" />
         </div>
       </div>
 
+      {/* Resource Usage */}
+      <label className="text-[13px] font-bold text-text-primary block mb-1 mt-2 border-b border-border pb-1">Resource & Waste</label>
+
       <div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-          <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-text-muted)' }}>
-            Shopping Habits (1 = minimal, 10 = heavy)
-          </label>
-          <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--color-text-primary)' }}>{shoppingScore}</span>
-        </div>
-        <input
-          type="range" min={1} max={10} step={1} value={shoppingScore}
-          onChange={(e) => onChange('shoppingScore', Number(e.target.value))}
-          style={{ width: '100%', cursor: 'pointer' }}
-        />
+        <label className="text-[13px] font-semibold text-text-muted flex items-center gap-2 mb-2">
+          <Droplets size={16} className="text-[#0EA5E9]" /> Monthly Water Usage (m³)
+        </label>
+        <input type="number" value={waterM3} onChange={(e) => onChange('waterM3', Number(e.target.value))}
+          className="w-full px-4 py-3 bg-surface-2 border border-border rounded-lg text-text-primary text-[15px] font-semibold outline-none font-sans" />
       </div>
 
       <div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-          <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-text-muted)' }}>
-            Recycling Rate
+        <div className="flex justify-between mb-2">
+          <label className="text-[13px] font-semibold text-text-muted flex items-center gap-2">
+            <Recycle size={16} className="text-accent" /> Household Waste Recycled (%)
           </label>
-          <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--color-text-primary)' }}>{recyclingPct}%</span>
+          <span className="text-[13px] font-bold text-accent">{recyclingPct}%</span>
         </div>
-        <input
-          type="range" min={0} max={100} step={5} value={recyclingPct}
+        <input type="range" min={0} max={100} step={5} value={recyclingPct}
           onChange={(e) => onChange('recyclingPct', Number(e.target.value))}
-          style={{ width: '100%', cursor: 'pointer' }}
-        />
+          className="w-full cursor-pointer accent-accent" />
       </div>
+
     </div>
   );
 }

@@ -1,3 +1,4 @@
+
 import { MapContainer, TileLayer, Marker, Tooltip } from 'react-leaflet';
 import L from 'leaflet';
 import {
@@ -5,6 +6,8 @@ import {
   Tooltip as RTooltip, Legend,
 } from 'recharts';
 import { ArrowDown, ArrowUp, DollarSign, Leaf } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { useSettings } from '../../context/SettingsContext';
 import type { SimulationResult } from '../../data/simulationData';
 
 function deltaIcon(before: number, after: number) {
@@ -21,63 +24,74 @@ function deltaIcon(before: number, after: number) {
       iconSize: [size, size],
       iconAnchor: [size / 2, size / 2],
     }),
-    color,
-    pct,
-    reduced,
+    color, pct, reduced,
   };
 }
 
-interface Props {
-  result: SimulationResult;
-}
+interface Props { result: SimulationResult; onSave?: () => void; isSaved?: boolean; }
 
-export default function SimulationResults({ result }: Props) {
+export default function SimulationResults({ result, onSave, isSaved }: Props) {
+  const { t } = useTranslation();
+  const { resolvedTheme } = useSettings();
   const totalDelta = result.totalAfter - result.totalBefore;
   const totalPct = Math.abs(Math.round((totalDelta / result.totalBefore) * 100));
+  const tileUrl = resolvedTheme === 'dark'
+    ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+    : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-      {/* Before/After stat cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
-        <div className="card" style={{ padding: 14, textAlign: 'center' }}>
-          <p style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>Before</p>
-          <p style={{ fontSize: 24, fontWeight: 800, color: 'var(--color-text-primary)' }}>{result.totalBefore.toLocaleString()}</p>
-          <p style={{ fontSize: 10, color: 'var(--color-text-muted)' }}>kg CO₂</p>
+    <div className="flex flex-col gap-4">
+      <div className="flex justify-end">
+        {onSave && (
+          <button
+            onClick={onSave}
+            disabled={isSaved}
+            className="px-4 py-2 rounded-lg bg-surface-2 border border-border text-xs font-semibold text-text-primary hover:bg-border transition-colors disabled:opacity-50 cursor-pointer"
+          >
+            {isSaved ? 'Result Saved ✓' : 'Save to History'}
+          </button>
+        )}
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="card p-3.5 text-center">
+          <p className="text-[11px] text-text-muted">{t('sim.result.before')}</p>
+          <p className="text-2xl font-extrabold text-text-primary">{result.totalBefore.toLocaleString()}</p>
+          <p className="text-[10px] text-text-muted">{t('common.kgCo2')}</p>
         </div>
-        <div className="card" style={{ padding: 14, textAlign: 'center' }}>
-          <p style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>After</p>
-          <p style={{ fontSize: 24, fontWeight: 800, color: 'var(--color-accent)' }}>{result.totalAfter.toLocaleString()}</p>
-          <p style={{ fontSize: 10, color: 'var(--color-text-muted)' }}>kg CO₂</p>
+        <div className="card p-3.5 text-center">
+          <p className="text-[11px] text-text-muted">{t('sim.result.after')}</p>
+          <p className="text-2xl font-extrabold text-accent">{result.totalAfter.toLocaleString()}</p>
+          <p className="text-[10px] text-text-muted">{t('common.kgCo2')}</p>
         </div>
-        <div className="card" style={{ padding: 14, textAlign: 'center' }}>
-          <p style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>Reduction</p>
-          <p style={{ fontSize: 24, fontWeight: 800, color: totalDelta < 0 ? '#22C55E' : '#EF4444' }}>
+        <div className="card p-3.5 text-center">
+          <p className="text-[11px] text-text-muted">{t('sim.result.reduction')}</p>
+          <p className="text-2xl font-extrabold" style={{ color: totalDelta < 0 ? '#22C55E' : '#EF4444' }}>
             {totalDelta < 0 ? '↓' : '↑'} {totalPct}%
           </p>
         </div>
-        <div className="card" style={{ padding: 14, textAlign: 'center' }}>
-          <p style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>Est. Cost</p>
-          <p style={{ fontSize: 24, fontWeight: 800, color: '#F59E0B' }}>${result.costBillion}B</p>
+        <div className="card p-3.5 text-center">
+          <p className="text-[11px] text-text-muted">{t('sim.result.estCost')}</p>
+          <p className="text-2xl font-extrabold text-energy">${result.costBillion}B</p>
         </div>
       </div>
 
-      {/* Delta map + Explanation cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-        <div className="card" style={{ padding: 0, overflow: 'hidden', height: 280 }}>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="card p-0 overflow-hidden h-[280px]">
           <MapContainer center={[40.3, 48.0]} zoom={7} zoomControl={false} scrollWheelZoom={false}
             style={{ width: '100%', height: '100%' }}>
-            <TileLayer url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" attribution="" />
+            <TileLayer key={tileUrl} url={tileUrl} attribution="" />
             {result.hotspotDeltas.map((h) => {
               const d = deltaIcon(h.before, h.after);
+              const cityLabel = t(`hotspot.${h.cityKey}`);
               return (
-                <Marker key={h.name} position={[h.lat, h.lng]} icon={d.icon}>
+                <Marker key={h.cityKey} position={[h.lat, h.lng]} icon={d.icon}>
                   <Tooltip direction="top" offset={[0, -12]} className="hotspot-tooltip" opacity={1}>
-                    <div style={{ fontWeight: 700, fontSize: 12 }}>{h.name}</div>
-                    <div style={{ display: 'flex', gap: 8, fontSize: 11, marginTop: 2 }}>
-                      <span style={{ color: 'var(--color-text-muted)' }}>{h.before.toLocaleString()}</span>
+                    <div className="font-bold text-xs">{cityLabel}</div>
+                    <div className="flex gap-2 text-[11px] mt-0.5">
+                      <span className="text-text-muted">{h.before.toLocaleString()}</span>
                       <span style={{ color: d.color }}>→ {h.after.toLocaleString()}</span>
                     </div>
-                    <div style={{ fontSize: 11, fontWeight: 700, color: d.color, marginTop: 2 }}>
+                    <div className="text-[11px] font-bold mt-0.5" style={{ color: d.color }}>
                       {d.reduced ? '↓' : '↑'} {d.pct}%
                     </div>
                   </Tooltip>
@@ -87,26 +101,25 @@ export default function SimulationResults({ result }: Props) {
           </MapContainer>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div className="flex flex-col gap-2">
           {result.sectors.map((s) => {
             const reduced = s.delta < 0;
             return (
-              <div key={s.name} className="card" style={{ padding: 14, display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-                <div style={{
-                  width: 32, height: 32, borderRadius: 8, flexShrink: 0,
-                  background: reduced ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                }}>
+              <div key={s.sectorKey} className="card p-3.5 flex gap-3 items-start">
+                <div className="w-8 h-8 rounded-lg shrink-0 flex items-center justify-center"
+                  style={{ background: reduced ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)' }}>
                   {reduced ? <ArrowDown size={16} color="#22C55E" /> : <ArrowUp size={16} color="#EF4444" />}
                 </div>
                 <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--color-text-primary)' }}>{s.name}</span>
-                    <span style={{ fontSize: 13, fontWeight: 800, color: reduced ? '#22C55E' : '#EF4444' }}>
-                      {s.delta > 0 ? '+' : ''}{s.delta.toLocaleString()} kg
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-bold text-text-primary">{t(`sim.sector.${s.sectorKey}`)}</span>
+                    <span className="text-[13px] font-extrabold" style={{ color: reduced ? '#22C55E' : '#EF4444' }}>
+                      {s.delta > 0 ? '+' : ''}{s.delta.toLocaleString()} {t('common.kg')}
                     </span>
                   </div>
-                  <p style={{ fontSize: 11, color: 'var(--color-text-muted)', marginTop: 2, lineHeight: 1.4 }}>{s.reason}</p>
+                  <p className="text-[11px] text-text-muted mt-0.5 leading-snug">
+                    {t(s.reasonKey, s.reasonParams as Record<string, string | number>)}
+                  </p>
                 </div>
               </div>
             );
@@ -114,37 +127,37 @@ export default function SimulationResults({ result }: Props) {
         </div>
       </div>
 
-      {/* Projection chart + Cost-benefit */}
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 16 }}>
+      <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-4">
         <div className="card">
-          <h3 style={{ fontSize: 14, fontWeight: 700, color: 'var(--color-text-primary)', marginBottom: 12 }}>Projected Timeline</h3>
+          <h3 className="text-sm font-bold text-text-primary mb-3">{t('sim.result.timeline')}</h3>
           <ResponsiveContainer width="100%" height={220}>
             <LineChart data={result.projectedTimeline} margin={{ top: 10, right: 10, bottom: 0, left: -10 }}>
               <CartesianGrid vertical={false} stroke="rgba(255,255,255,0.05)" />
               <XAxis dataKey="year" tick={{ fontSize: 11, fill: '#6B7280' }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 11, fill: '#6B7280' }} axisLine={false} tickLine={false} tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k`} />
+              <YAxis tick={{ fontSize: 11, fill: '#6B7280' }} axisLine={false} tickLine={false}
+                tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k`} />
               <RTooltip contentStyle={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 8, fontSize: 12 }} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
-              <Line type="monotone" dataKey="baseline" name="Baseline" stroke="#EF4444" strokeWidth={2} strokeDasharray="6 3" dot={false} />
-              <Line type="monotone" dataKey="simulated" name="Simulated" stroke="#22C55E" strokeWidth={2.5} dot={{ r: 3, fill: '#22C55E' }} />
+              <Line type="monotone" dataKey="baseline" name={t('sim.chart.baseline')} stroke="#EF4444" strokeWidth={2} strokeDasharray="6 3" dot={false} />
+              <Line type="monotone" dataKey="simulated" name={t('sim.chart.simulated')} stroke="#22C55E" strokeWidth={2.5} dot={{ r: 3, fill: '#22C55E' }} />
             </LineChart>
           </ResponsiveContainer>
         </div>
 
-        <div className="card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 16 }}>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ width: 48, height: 48, borderRadius: 12, background: 'rgba(34,197,94,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px' }}>
+        <div className="card flex flex-col justify-center gap-4">
+          <div className="text-center">
+            <div className="w-12 h-12 rounded-xl bg-[rgba(34,197,94,0.15)] flex items-center justify-center mx-auto mb-2">
               <Leaf size={24} color="#22C55E" />
             </div>
-            <p style={{ fontSize: 28, fontWeight: 800, color: 'var(--color-accent)' }}>{result.co2SavedTons.toLocaleString()}</p>
-            <p style={{ fontSize: 12, color: 'var(--color-text-muted)' }}>kg CO₂ saved annually</p>
+            <p className="text-[28px] font-extrabold text-accent">{result.co2SavedTons.toLocaleString()}</p>
+            <p className="text-xs text-text-muted">{t('sim.result.saved')}</p>
           </div>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ width: 48, height: 48, borderRadius: 12, background: 'rgba(245,158,11,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px' }}>
+          <div className="text-center">
+            <div className="w-12 h-12 rounded-xl bg-[rgba(245,158,11,0.15)] flex items-center justify-center mx-auto mb-2">
               <DollarSign size={24} color="#F59E0B" />
             </div>
-            <p style={{ fontSize: 28, fontWeight: 800, color: '#F59E0B' }}>${result.costBillion}B</p>
-            <p style={{ fontSize: 12, color: 'var(--color-text-muted)' }}>estimated investment</p>
+            <p className="text-[28px] font-extrabold text-energy">${result.costBillion}B</p>
+            <p className="text-xs text-text-muted">{t('sim.result.investment')}</p>
           </div>
         </div>
       </div>

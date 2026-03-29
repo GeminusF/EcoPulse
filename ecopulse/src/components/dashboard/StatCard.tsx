@@ -15,77 +15,29 @@ interface StatCardProps {
 }
 
 export default function StatCard({
-  label,
-  value,
-  changeText,
-  changePositive,
-  sparklineData,
-  iconBg,
-  iconColor,
-  lineColor,
-  icon,
-  animationDelay = 0,
+  label, value, changeText, changePositive,
+  sparklineData, iconBg, iconColor, lineColor, icon, animationDelay = 0,
 }: StatCardProps) {
   return (
-    <div
-      className="card animate-fade-in"
-      style={{ animationDelay: `${animationDelay}ms`, opacity: 0 }}
-    >
-      {/* Row 1: Label + Icon */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+    <div className="card animate-fade-in" style={{ animationDelay: `${animationDelay}ms`, opacity: 0 }}>
+      <div className="flex justify-between items-start">
         <div>
-          <p style={{ fontSize: 13, color: 'var(--color-text-muted)', fontWeight: 500 }}>
-            {label}
-          </p>
-          <p
-            style={{
-              fontSize: 28,
-              fontWeight: 800,
-              color: 'var(--color-text-primary)',
-              lineHeight: 1.1,
-              marginTop: 4,
-            }}
-          >
-            {value}
-          </p>
+          <p className="text-[13px] text-text-muted font-medium">{label}</p>
+          <p className="text-2xl md:text-[28px] font-extrabold text-text-primary leading-tight mt-1">{value}</p>
         </div>
-        <div
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: 10,
-            background: iconBg,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: iconColor,
-          }}
-        >
+        <div className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0"
+          style={{ background: iconBg, color: iconColor }}>
           {icon}
         </div>
       </div>
-
-      {/* Row 2: Change text + Sparkline */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: 12 }}>
-        <span
-          style={{
-            fontSize: 13,
-            color: changePositive ? 'var(--color-positive)' : 'var(--color-danger)',
-          }}
-        >
+      <div className="flex justify-between items-end mt-3">
+        <span className={`text-[13px] ${changePositive ? 'text-positive' : 'text-danger'}`}>
           {changeText}
         </span>
-        <div style={{ width: 100, height: 40 }}>
+        <div className="w-[100px] h-10">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={sparklineData}>
-              <Line
-                type="monotone"
-                dataKey="v"
-                stroke={lineColor}
-                strokeWidth={2}
-                dot={false}
-                isAnimationActive={false}
-              />
+              <Line type="monotone" dataKey="v" stroke={lineColor} strokeWidth={2} dot={false} isAnimationActive={false} />
             </LineChart>
           </ResponsiveContainer>
         </div>

@@ -11,17 +11,14 @@ export interface ForecastPoint {
 }
 
 export const forecastFanData: ForecastPoint[] = [
-  { year: '2020', baseline: 22000, low95: 22000, low75: 22000, low50: 22000, high50: 22000, high75: 22000, high95: 22000, withPolicy: 22000 },
-  { year: '2021', baseline: 22500, low95: 22100, low75: 22200, low50: 22300, high50: 22700, high75: 22800, high95: 22900, withPolicy: 22400 },
-  { year: '2022', baseline: 23000, low95: 22300, low75: 22500, low50: 22700, high50: 23300, high75: 23500, high95: 23700, withPolicy: 22600 },
-  { year: '2023', baseline: 23500, low95: 22400, low75: 22700, low50: 23000, high50: 24000, high75: 24300, high95: 24600, withPolicy: 22500 },
-  { year: '2024', baseline: 24000, low95: 22500, low75: 23000, low50: 23400, high50: 24600, high75: 25000, high95: 25500, withPolicy: 22200 },
-  { year: '2025', baseline: 24350, low95: 22400, low75: 23100, low50: 23600, high50: 25100, high75: 25600, high95: 26300, withPolicy: 21800 },
-  { year: '2026', baseline: 25000, low95: 22200, low75: 23200, low50: 23800, high50: 26200, high75: 26800, high95: 27800, withPolicy: 21200 },
-  { year: '2027', baseline: 25700, low95: 22000, low75: 23300, low50: 24000, high50: 27400, high75: 28100, high95: 29400, withPolicy: 20500 },
-  { year: '2028', baseline: 26500, low95: 21800, low75: 23400, low50: 24300, high50: 28700, high75: 29600, high95: 31200, withPolicy: 19800 },
-  { year: '2029', baseline: 27200, low95: 21500, low75: 23500, low50: 24500, high50: 29900, high75: 30900, high95: 32900, withPolicy: 19000 },
-  { year: '2030', baseline: 28000, low95: 21200, low75: 23600, low50: 24800, high50: 31200, high75: 32400, high95: 34800, withPolicy: 18200 },
+  { year: '2023', baseline: 22250, low95: 22250, low75: 22250, low50: 22250, high50: 22250, high75: 22250, high95: 22250, withPolicy: 22250 },
+  { year: '2024', baseline: 23100, low95: 23100, low75: 23100, low50: 23100, high50: 23100, high75: 23100, high95: 23100, withPolicy: 23100 },
+  { year: '2025', baseline: 24350, low95: 24000, low75: 24150, low50: 24250, high50: 24450, high75: 24650, high95: 24800, withPolicy: 24350 },
+  { year: '2026', baseline: 24000, low95: 23100, low75: 23500, low50: 23750, high50: 24200, high75: 24800, high95: 25400, withPolicy: 23200 },
+  { year: '2027', baseline: 23500, low95: 21500, low75: 22200, low50: 22800, high50: 24200, high75: 25100, high95: 26000, withPolicy: 21800 },
+  { year: '2028', baseline: 24600, low95: 21400, low75: 22600, low50: 23700, high50: 25500, high75: 26800, high95: 28000, withPolicy: 22400 },
+  { year: '2029', baseline: 23800, low95: 19500, low75: 21000, low50: 22500, high50: 25200, high75: 26500, high95: 28500, withPolicy: 20500 },
+  { year: '2030', baseline: 22100, low95: 17000, low75: 19000, low50: 20500, high50: 24500, high75: 26000, high95: 28000, withPolicy: 18500 },
 ];
 
 export interface SectorForecast {
@@ -38,12 +35,14 @@ export interface SectorForecast {
 }
 
 export const sectorForecasts: SectorForecast[] = [
-  { year: '2020', transport: 6400, transportLow: 6400, transportHigh: 6400, energy: 10100, energyLow: 10100, energyHigh: 10100, industry: 2900, industryLow: 2900, industryHigh: 2900 },
-  { year: '2022', transport: 7300, transportLow: 6800, transportHigh: 7800, energy: 11200, energyLow: 10500, energyHigh: 11900, industry: 3250, industryLow: 3000, industryHigh: 3500 },
-  { year: '2024', transport: 7800, transportLow: 7000, transportHigh: 8600, energy: 11900, energyLow: 10800, energyHigh: 13000, industry: 3400, industryLow: 3000, industryHigh: 3800 },
-  { year: '2026', transport: 8500, transportLow: 7200, transportHigh: 9800, energy: 12800, energyLow: 11000, energyHigh: 14600, industry: 3700, industryLow: 3000, industryHigh: 4400 },
-  { year: '2028', transport: 9200, transportLow: 7400, transportHigh: 11000, energy: 13600, energyLow: 11200, energyHigh: 16000, industry: 4000, industryLow: 3000, industryHigh: 5000 },
-  { year: '2030', transport: 9800, transportLow: 7500, transportHigh: 12100, energy: 14200, energyLow: 11400, energyHigh: 17000, industry: 4200, industryLow: 3000, industryHigh: 5400 },
+  { year: '2023', transport: 7500, transportLow: 7500, transportHigh: 7500, energy: 11390, energyLow: 11390, energyHigh: 11390, industry: 3360, industryLow: 3360, industryHigh: 3360 },
+  { year: '2024', transport: 7800, transportLow: 7800, transportHigh: 7800, energy: 11900, energyLow: 11900, energyHigh: 11900, industry: 3400, industryLow: 3400, industryHigh: 3400 },
+  { year: '2025', transport: 8200, transportLow: 8000, transportHigh: 8400, energy: 12500, energyLow: 12200, energyHigh: 12800, industry: 3650, industryLow: 3500, industryHigh: 3800 },
+  { year: '2026', transport: 8160, transportLow: 7800, transportHigh: 8800, energy: 12290, energyLow: 11500, energyHigh: 13200, industry: 3550, industryLow: 3200, industryHigh: 3900 },
+  { year: '2027', transport: 8040, transportLow: 7500, transportHigh: 9200, energy: 11980, energyLow: 10800, energyHigh: 13500, industry: 3480, industryLow: 3000, industryHigh: 4000 },
+  { year: '2028', transport: 8490, transportLow: 7300, transportHigh: 10200, energy: 12500, energyLow: 11000, energyHigh: 14800, industry: 3610, industryLow: 3000, industryHigh: 4500 },
+  { year: '2029', transport: 8260, transportLow: 6900, transportHigh: 10300, energy: 12040, energyLow: 10200, energyHigh: 14500, industry: 3500, industryLow: 2700, industryHigh: 4500 },
+  { year: '2030', transport: 7730, transportLow: 6200, transportHigh: 9800, energy: 11140, energyLow: 8900, energyHigh: 14200, industry: 3230, industryLow: 2400, industryHigh: 4200 },
 ];
 
 export interface BacktestEntry {
@@ -53,32 +52,43 @@ export interface BacktestEntry {
 }
 
 export const backtestData: BacktestEntry[] = [
-  { year: '2018', actual: 19800, predicted: 19500 },
-  { year: '2019', actual: 20600, predicted: 20800 },
-  { year: '2020', actual: 19400, predicted: 21000 },
-  { year: '2021', actual: 20900, predicted: 21200 },
-  { year: '2022', actual: 21750, predicted: 21900 },
   { year: '2023', actual: 22250, predicted: 22400 },
   { year: '2024', actual: 23100, predicted: 23000 },
   { year: '2025', actual: 24350, predicted: 24200 },
+  { year: '2026', actual: 23900, predicted: 24000 },
+  { year: '2027', actual: 23400, predicted: 23500 },
+  { year: '2028', actual: 24700, predicted: 24600 },
+  { year: '2029', actual: 23600, predicted: 23800 },
+  { year: '2030', actual: 22200, predicted: 22100 },
 ];
 
 export const sectorConfidence = [
-  { sector: 'Transport', confidence: 87, color: '#22D3EE' },
-  { sector: 'Energy', confidence: 82, color: '#F59E0B' },
-  { sector: 'Industry', confidence: 72, color: '#A855F7' },
+  { sectorKey: 'sector.transport', confidence: 87, color: '#22D3EE' },
+  { sectorKey: 'sector.energy', confidence: 82, color: '#F59E0B' },
+  { sectorKey: 'sector.industry', confidence: 72, color: '#A855F7' },
 ];
 
-export const modelMetadata = {
-  type: 'LSTM Neural Network with Attention Mechanism',
-  features: ['GDP growth rate', 'Population trends', 'Energy prices (oil, gas)', 'Seasonal consumption patterns', 'Policy change indicators', 'Industrial output index', 'Vehicle registration data'],
-  trainingPeriod: '2005 – 2023 (18 years of monthly data)',
-  dataSources: 'State Statistical Committee of Azerbaijan, IEA, World Bank',
-  accuracy: { mape: 3.2, rmse: 480 },
+export const modelAccuracy = { mape: 3.2, rmse: 480 };
+
+export const modelMetadataKeys = {
+  type: 'pred.meta.type',
+  features: [
+    'pred.meta.feature0',
+    'pred.meta.feature1',
+    'pred.meta.feature2',
+    'pred.meta.feature3',
+    'pred.meta.feature4',
+    'pred.meta.feature5',
+    'pred.meta.feature6',
+  ] as const,
+  trainingPeriod: 'pred.meta.training',
+  trainingPeriodVal: 'pred.meta.trainingVal',
+  dataSources: 'pred.meta.sources',
+  dataSourcesVal: 'pred.meta.sourcesVal',
   limitations: [
-    'Model accuracy degrades beyond 3-year horizons due to policy uncertainty',
-    'COVID-19 disruption (2020) introduced anomalous patterns in training data',
-    'Does not account for potential new industrial mega-projects',
-    'Assumes linear relationship between GDP growth and energy demand',
-  ],
+    'pred.meta.limit0',
+    'pred.meta.limit1',
+    'pred.meta.limit2',
+    'pred.meta.limit3',
+  ] as const,
 };

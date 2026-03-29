@@ -1,0 +1,12 @@
+{
+  "reportTitle": "Regional Comparison Report",
+  "generatedAt": "2025-03-28T12:00:00Z",
+  "regions": [
+    { "name": "Baku", "emissions_kt": 12400, "population": 2300000, "per_capita_t": 5.39 },
+    { "name": "Absheron-Khizi", "emissions_kt": 5800, "population": 580000, "per_capita_t": 10.0 },
+    { "name": "Ganja-Dashkasan", "emissions_kt": 4200, "population": 610000, "per_capita_t": 6.88 },
+    { "name": "Lankaran-Astara", "emissions_kt": 1200, "population": 940000, "per_capita_t": 1.27 }
+  ],
+  "dominantRegion": "Baku",
+  "highestPerCapita": "Absheron-Khizi"
+}

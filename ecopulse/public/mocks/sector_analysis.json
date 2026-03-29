@@ -1,0 +1,27 @@
+{
+  "reportTitle": "Sector-by-Sector Breakdown",
+  "generatedAt": "2025-03-28T12:00:00Z",
+  "data": [
+    {
+      "sector": "Energy",
+      "emissions_kt": 14500,
+      "trend": "+5.0%"
+    },
+    {
+      "sector": "Transport",
+      "emissions_kt": 9200,
+      "trend": "-2.1%"
+    },
+    {
+      "sector": "Industry",
+      "emissions_kt": 8500,
+      "trend": "+1.2%"
+    },
+    {
+      "sector": "Agriculture",
+      "emissions_kt": 3000,
+      "trend": "-0.5%"
+    }
+  ],
+  "summary": "Overall sector emissions remain stable. Energy saw a peak due to winter heating demand."
+}
