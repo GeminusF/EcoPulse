@@ -19,7 +19,7 @@ export default function HomeSolutions() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {/* Enterprise */}
           <div id="enterprise-compliance" className="scroll-mt-32 card group hover:border-accent/40 bg-surface/50 backdrop-blur-md transition-all duration-300">
             <div className="w-14 h-14 rounded-2xl bg-surface border border-border flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-accent/10 group-hover:border-accent/30 transition-all duration-300">

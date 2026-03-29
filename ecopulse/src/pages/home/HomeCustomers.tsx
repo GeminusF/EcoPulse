@@ -1,12 +1,32 @@
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ShieldCheck } from 'lucide-react';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
 
 export default function HomeCustomers() {
   const { t } = useTranslation();
+  const marqueeRef = useRef<HTMLDivElement>(null);
+  const marqueeTween = useRef<gsap.core.Tween | null>(null);
 
   const companies = [
     "SOCAR", "Ministry of Ecology", "BP Caspian", "SOCAR Polymer", "Azenerji", "Azerishiq", "Azergold", "Azercell"
   ];
+
+  const items = [...companies, ...companies, ...companies, ...companies];
+
+  useGSAP(() => {
+    if (!marqueeRef.current) return;
+    marqueeTween.current = gsap.to(marqueeRef.current, {
+      xPercent: -50,
+      ease: 'none',
+      duration: 40,
+      repeat: -1,
+    });
+  }, []);
+
+  const handleMouseEnter = () => marqueeTween.current?.pause();
+  const handleMouseLeave = () => marqueeTween.current?.play();
 
   return (
     <section id="customers" className="py-24 relative bg-background border-y border-border overflow-hidden">
@@ -17,16 +37,18 @@ export default function HomeCustomers() {
         </h2>
       </div>
 
-      {/* Manual CSS Marquee */}
-      <div className="relative w-full overflow-hidden whitespace-nowrap py-8 flex items-center group">
-        {/* Fade Ends */}
-        <div className="absolute left-0 top-0 w-48 h-full bg-gradient-to-r from-background to-transparent z-10 pointer-events-none"></div>
-        <div className="absolute right-0 top-0 w-48 h-full bg-gradient-to-l from-background to-transparent z-10 pointer-events-none"></div>
+      {/* GSAP Marquee (Responsive & Seamless) */}
+      <div 
+        className="relative w-full overflow-hidden whitespace-nowrap py-8 flex items-center group cursor-default"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <div className="absolute left-0 top-0 w-32 h-full bg-gradient-to-r from-background to-transparent z-10 pointer-events-none"></div>
+        <div className="absolute right-0 top-0 w-32 h-full bg-gradient-to-l from-background to-transparent z-10 pointer-events-none"></div>
         
-        {/* We use inline styles or a custom tailwind class for an infinite marquee scroll */}
-        <div className="flex w-max animate-marquee space-x-16 lg:space-x-24 px-8 items-center cursor-default group-hover:[animation-play-state:paused]">
-          {[...companies, ...companies, ...companies, ...companies].map((name, i) => (
-            <div key={i} className="text-3xl lg:text-5xl font-black flex-shrink-0 tracking-tighter text-text-muted/30 uppercase hover:text-text-primary/70 transition-colors select-none">
+        <div ref={marqueeRef} className="flex w-max items-center">
+          {items.map((name, i) => (
+            <div key={i} className="text-3xl lg:text-5xl font-black flex-shrink-0 tracking-tighter text-text-muted/30 uppercase hover:text-text-primary/70 transition-colors select-none pr-16 lg:pr-24">
               {name}
             </div>
           ))}

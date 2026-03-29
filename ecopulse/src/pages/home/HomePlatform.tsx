@@ -19,7 +19,7 @@ export default function HomePlatform() {
         {/* Bento Grid Layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Feature 1: Prediction (Large) */}
-          <div id="prediction-engine" className="scroll-mt-32 lg:col-span-2 group relative overflow-hidden rounded-3xl bg-surface border border-border p-8 md:p-12 hover:border-accent/40 transition-colors shadow-sm">
+          <div id="prediction-engine" className="scroll-mt-32 md:col-span-2 lg:col-span-2 group relative overflow-hidden rounded-3xl bg-surface border border-border p-8 md:p-12 hover:border-accent/40 transition-colors shadow-sm">
             <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 rounded-full blur-3xl group-hover:bg-accent/10 transition-colors"></div>
             <div className="relative z-10 flex flex-col h-full justify-between">
               <div className="w-14 h-14 bg-accent/20 rounded-2xl flex items-center justify-center text-accent mb-8 group-hover:scale-110 transition-transform duration-300">
@@ -58,7 +58,7 @@ export default function HomePlatform() {
           </div>
 
           {/* Feature 3: Analytics (Wide) */}
-          <div id="carbon-analytics" className="scroll-mt-32 lg:col-span-3 group relative overflow-hidden rounded-3xl bg-surface border border-border p-8 md:p-12 hover:border-[#F59E0B]/40 transition-colors shadow-sm flex flex-col md:flex-row gap-8 items-center justify-between">
+          <div id="carbon-analytics" className="scroll-mt-32 md:col-span-2 lg:col-span-3 group relative overflow-hidden rounded-3xl bg-surface border border-border p-8 md:p-12 hover:border-[#F59E0B]/40 transition-colors shadow-sm flex flex-col md:flex-row gap-8 items-center justify-between">
             <div className="absolute bottom-0 left-0 w-96 h-32 bg-[#F59E0B]/5 rounded-full blur-3xl group-hover:bg-[#F59E0B]/10 transition-colors"></div>
             
             <div className="w-full md:w-1/2 relative z-10">

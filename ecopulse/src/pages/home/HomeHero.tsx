@@ -25,7 +25,7 @@ export default function HomeHero() {
         </div>
 
         {/* Huge Headline */}
-        <h1 className="text-6xl md:text-7xl lg:text-[5.5rem] font-bold tracking-tighter leading-[1.1] text-text-primary animate-fade-in-up" style={{ animationDelay: '100ms' }}>
+        <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-bold tracking-tighter leading-[1.1] text-text-primary animate-fade-in-up" style={{ animationDelay: '100ms' }}>
           {t('home.hero.title')}
         </h1>
 

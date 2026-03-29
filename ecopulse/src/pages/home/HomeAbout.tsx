@@ -15,7 +15,7 @@ export default function HomeAbout() {
 
         <div className="space-y-12">
           {/* Mission */}
-          <div id="mission" className="scroll-mt-32 w-full bg-surface border border-border p-10 md:p-14 rounded-3xl flex flex-col md:flex-row items-center gap-12 group hover:border-accent/40 transition-colors">
+          <div id="mission" className="scroll-mt-32 w-full bg-surface border border-border p-6 md:p-14 rounded-3xl flex flex-col md:flex-row items-center gap-8 md:gap-12 group hover:border-accent/40 transition-colors">
             <div className="flex-shrink-0 w-20 h-20 rounded-full bg-accent/20 flex items-center justify-center text-accent group-hover:scale-110 transition-transform">
               <Target size={36} />
             </div>
@@ -28,7 +28,7 @@ export default function HomeAbout() {
           </div>
 
           {/* Vision 2030 */}
-          <div id="vision-2030" className="scroll-mt-32 w-full bg-surface border border-border p-10 md:p-14 rounded-3xl flex flex-col md:flex-row-reverse items-center gap-12 group hover:border-[#3B82F6]/40 transition-colors">
+          <div id="vision-2030" className="scroll-mt-32 w-full bg-surface border border-border p-6 md:p-14 rounded-3xl flex flex-col md:flex-row-reverse items-center gap-8 md:gap-12 group hover:border-[#3B82F6]/40 transition-colors">
             <div className="flex-shrink-0 w-20 h-20 rounded-full bg-[#3B82F6]/20 flex items-center justify-center text-[#3B82F6] group-hover:scale-110 transition-transform">
               <Users size={36} />
             </div>
@@ -41,7 +41,7 @@ export default function HomeAbout() {
           </div>
 
           {/* Careers */}
-          <div id="careers" className="scroll-mt-32 w-full bg-surface border border-border p-10 md:p-14 rounded-3xl flex flex-col md:flex-row items-center gap-12 group hover:border-[#F59E0B]/40 transition-colors">
+          <div id="careers" className="scroll-mt-32 w-full bg-surface border border-border p-6 md:p-14 rounded-3xl flex flex-col md:flex-row items-center gap-8 md:gap-12 group hover:border-[#F59E0B]/40 transition-colors">
             <div className="flex-shrink-0 w-20 h-20 rounded-full bg-[#F59E0B]/20 flex items-center justify-center text-[#F59E0B] group-hover:scale-110 transition-transform">
               <Briefcase size={36} />
             </div>
